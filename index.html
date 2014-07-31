@@ -17,13 +17,16 @@
         <h2>Test-a-rama</h2>
 
         <div id="test"></div>
-        
+
         <script>
-            var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/"; // For example
-            var client = new KOLOLA(endpoint_url);
+            
+            
+        var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/";
+        var client = new KOLOLA(endpoint_url);
+
 
             client.query('%', function(events) {
-                var impacts = new KSlide_feature(20, events);
+                var impacts = new KSlide_feature(26, events);
                 impacts.render('#test', function(){
                     console.log("done!!!");
                 })
@@ -34,74 +37,81 @@
                 //});
             });
 
-            var pres = new KVideo(client);
+        var pres = new KVideo(client);
 
-            function getCollabNet(events)
+        function getCollabNet(events)
+        {
+            var edges = [];
+            for (var i in events)
             {
-                var edges = {};
-                for (var i in events)
+                for(var p in events[i].people)
                 {
-                    for (var p in events[i].people)
+                    var personid = events[i].people[p];
+
+                    if (typeof edges[personid] === 'undefined')
                     {
-                        var personid = events[i].people[p];
+                        edges[personid] = [];
+                    }
 
-                        if (typeof edges[personid] === 'undefined')
+                    for (var p2 in events[i].people)
+                    {
+                        var personid2 = events[i].people[p2];
+
+                        if (typeof edges[personid][personid2] === 'undefined')
                         {
-                            edges[personid] = {};
+                            edges[personid][personid2] = 1;
                         }
-
-                        for (var p2 in events[i].people)
+                        else
                         {
-                            var personid2 = events[i].people[p2];
-
-                            if (typeof edges[personid][personid2] === 'undefined')
-                            {
-                                edges[personid][personid2] = 1;
-                            }
-                            else
-                            {
-                                edges[personid][personid2]++;
-                            }
+                            edges[personid][personid2]++;
                         }
                     }
                 }
             }
 
-            function setup(data)
+            return edges;
+        }
+                
+        function setup(data)
+        {
+            console.log("Data received - Creating slides");
+            
+            // Slide of names
+            var ppl = new KSlide_nameList(data.people);
+            pres.addSlide(ppl);
+            
+            // Collaboration network
+            var net = getCollabNet(data.events);
+            var collab = new KSlide_collaboration(net, data.people);
+            pres.addSlide(collab);
+            
+
+            // Event photos for events that have photos
+            for (var i in data.events)
             {
+                var e = data.events[i];
 
-                // Slide of names
-                var ppl = new KSlide_nameList(data.people);
-                pres.addSlide(ppl);
-
-                // Collaboration network
-                var net = getCollabNet(data.events);
-                var collab = new KSlide_collaboration(net, data.people);
-                pres.addSlide(collab);
-
-                // Event photos for events that have photos
-                for (var i in data.events)
+                if (e.photos.length > 0)
                 {
-                    var e = data.events[i];
-
-                    if (e.photos.length > 0)
-                    {
-                        var s = new KSlide_event(e);
-                    }
+                    var s = new KSlide_event(e);
                 }
             }
-
-            // Get all events and people
-            client.query('%', function() {
-            }, function() {
-            }, setup);
-
-            /*
-             var cbevents = function(events){ console.log("Received events", events); };
-             client.query('headley', cbevents);
-             */
-
-        </script>
+        
+            console.log("Rendering slides");
+            pres.render();
+            
+            console.log("Dumping slides");
+            var slides =  pres.getSlides();
+            for(var i in slides)
+            {
+                document.body.appendChild(slides[i]);
+            }
+        }
+        
+        // Get all events and people
+        client.query('%', function(){}, function(){}, setup);
+        
+	</script>
 
     </body>
 </html>

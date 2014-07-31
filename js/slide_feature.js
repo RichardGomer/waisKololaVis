@@ -33,6 +33,7 @@ function KSlide_feature(feature, events)
         //get the feature statement
         var client = new KOLOLA(self.endpoint_url);
         client.getFramework(function(fw) {
+            console.log(fw);
             for (var i = 0; i < fw.length; i++)
             {
                 if (self.feature == fw[i].featureid)
