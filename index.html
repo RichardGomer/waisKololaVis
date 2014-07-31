@@ -3,86 +3,100 @@
     <head>
         <title>WAISFest</title>
         <script src="lib/jquery/jquery.js"></script>
+        <script src="lib/d3/d3.js"></script>
+        <script src="lib/d3/d3.layout.cloud.js"></script>
         <script src="client/kolola.js"></script>
         <script src="js/slide.js"></script>
         <script src="js/slide_eventPhotos.js"></script>
         <script src="js/slide_peopleNames.js"></script>
     </head>
-    
+
     <body>
-	
+
         <h2>Test-a-rama</h2>
-	
-	<script>
-		var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/"; // For example
-		var client = new KOLOLA(endpoint_url);
-		
-        var pres = new KVideo(client);
+
+        <div id="test"></div>
         
-        function getCollabNet(events)
-        {
-            var edges = {};
-            for(var i in events)
+        <script>
+            var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/"; // For example
+            var client = new KOLOLA(endpoint_url);
+
+            client.query('%', function() {
+            }, function(people) {
+                var peopleNames = new KSlide_nameList(people);
+                peopleNames.render('#test', function() {
+                    console.log("done!!!");
+                });
+            });
+
+            var pres = new KVideo(client);
+
+            function getCollabNet(events)
             {
-                for(var p in events[i].people)
+                var edges = {};
+                for (var i in events)
                 {
-                    var personid = events[i].people[p];
-                    
-                    if(typeof edges[personid] === 'undefined')
+                    for (var p in events[i].people)
                     {
-                        edges[personid] = {};
-                    }
-                    
-                    for(var p2 in events[i].people)
-                    {
-                        var personid2 = events[i].people[p2];
-                        
-                        if(typeof edges[personid][personid2] === 'undefined')
+                        var personid = events[i].people[p];
+
+                        if (typeof edges[personid] === 'undefined')
                         {
-                            edges[personid][personid2] = 1;   
+                            edges[personid] = {};
                         }
-                        else
+
+                        for (var p2 in events[i].people)
                         {
-                            edges[personid][personid2]++;
+                            var personid2 = events[i].people[p2];
+
+                            if (typeof edges[personid][personid2] === 'undefined')
+                            {
+                                edges[personid][personid2] = 1;
+                            }
+                            else
+                            {
+                                edges[personid][personid2]++;
+                            }
                         }
                     }
                 }
             }
-        }
-        
-        function setup(data)
-        {
-            
-            // Slide of names
-            var ppl = new KSlide_nameList(data.people);
-            pres.addSlide(ppl);
-            
-            // Collaboration network
-            var net = getCollabNet(data.events);
-            var collab = new KSlide_collaboration(net, data.people);
-            pres.addSlide(collab);
-            
-            // Event photos for events that have photos
-            for(var i in data.events)
+
+            function setup(data)
             {
-                var e = data.events[i];
-                
-                if(e.photos.length > 0)
+
+                // Slide of names
+                var ppl = new KSlide_nameList(data.people);
+                pres.addSlide(ppl);
+
+                // Collaboration network
+                var net = getCollabNet(data.events);
+                var collab = new KSlide_collaboration(net, data.people);
+                pres.addSlide(collab);
+
+                // Event photos for events that have photos
+                for (var i in data.events)
                 {
-                       var s = new KSlide_event(e);
+                    var e = data.events[i];
+
+                    if (e.photos.length > 0)
+                    {
+                        var s = new KSlide_event(e);
+                    }
                 }
             }
-        }
-        
-        // Get all events and people
-        client.query('%', function(){}, function(){}, setup);
-        
-        /*
-		var cbevents = function(events){ console.log("Received events", events); };
-		client.query('headley', cbevents);
-		*/
-        
-	</script>
-	
+
+            // Get all events and people
+            client.query('%', function() {
+            }, function() {
+            }, setup);
+
+            /*
+             var cbevents = function(events){ console.log("Received events", events); };
+             client.query('headley', cbevents);
+             */
+
+        </script>
+
     </body>
 </html>

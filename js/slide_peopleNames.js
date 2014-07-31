@@ -1,6 +1,9 @@
 /**
  * Slide that shows a list of all people in a set of people, with names scaled to number
  * of events - Like a sort of tag cloud
+ * 
+ * TODO - this shoudl instead receive a list of all events and work out people/event counts
+ * based on that list instead (to save on API calls)
  */
 
 function KSlide_nameList(people)
