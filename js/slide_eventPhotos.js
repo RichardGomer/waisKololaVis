@@ -6,7 +6,8 @@
  
  function KSlide_EventPhotos(event)
  {
- 
+        var self = this;
+     
         self.render = function(el, cb_done)
         {
             var img;
@@ -22,4 +23,3 @@
         }
  }
  
- KSlide_EventPhotos.prototype = KSlide;

@@ -23,11 +23,13 @@ function KSlide_collaboration(net, people)
 
                 for(var to in net)
                 {
-                    nodes.push(from);
-                    nodes.push(to);
-                    g.edges.push({id: i, source: from, target: to, size: net[from][to]});
+                    nodes.push(from.toString());
+                    nodes.push(to.toString());
+                    g.edges.push({id: "e_" + to + "_" + from, source: from, target: to, size: net[from][to]});
                 }
             }
+        
+            console.log(g);
 
             // Remove duplicate nodes
             var nodeList = arrayUnique(nodes);
@@ -43,10 +45,14 @@ function KSlide_collaboration(net, people)
             // Add all the nodes, labelled with the person's name
             for(var i in nodeList)
             {
-                g.nodes.push({id: nodeList[i], x: Math.random(), y: Math.random(), size: 2, label: names[id]});
+                g.nodes.push({'id': nodeList[i].toString(), 'x': Math.random(), 'y': Math.random(), 'size': 2, 'label': names[nodeList[i]]});
             }
-
-
+        
+            document.body.appendChild(el);
+        
+            el.style.width = "600px";
+            el.style.height = "500px";
+        
             var s = new sigma({
                 graph: g,
                 container: el,
@@ -60,7 +66,6 @@ function KSlide_collaboration(net, people)
             });
 
             s.startForceAtlas2();
-            window.setTimeout(function(){s.stopForceAtlas2(); cb_done();}, 1500);
-        }   
+            window.setTimeout(function(){s.stopForceAtlas2(); cb_done();}, 1500); 
     }
 }

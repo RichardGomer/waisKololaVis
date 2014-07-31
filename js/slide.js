@@ -50,20 +50,25 @@ function KVideo(apiclient, element)
         // Clear any existing renderings
         self.els = [];
         
-        var snum = 0;
+        //console.log("Rendering slides", self.slides);
+        
+        var snum = -1;
         var next = function()
         {
             snum++;
             
+            //console.log("Slide", snum, "of", self.slides.length, "is", self.slides[snum]);
+            
             // If there are no slides, call the final callback and exit
-            if(snum <= self.slides.length)
+            if(snum >= self.slides.length)
             {
                 cb_done();
                 return;
             }
             
-            self.els[snum] = el = document.createElement('div'); // Create an element to render into
-            self.slides[snum].render(el, next); // Render the slide and when it's done render the next one
+            self.els[snum] = document.createElement('div'); // Create an element to render into
+            self.els[snum].setAttribute('id', 'slide_' + snum);
+            self.slides[snum].render(self.els[snum], next); // Render the slide and when it's done render the next one
         }
         
         next();
