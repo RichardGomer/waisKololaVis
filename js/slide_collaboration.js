@@ -47,9 +47,7 @@ function KSlide_collaboration(net, people)
             {
                 g.nodes.push({'id': nodeList[i].toString(), 'x': Math.random(), 'y': Math.random(), 'size': 2, 'label': names[nodeList[i]]});
             }
-        
-            document.body.appendChild(el);
-        
+
             el.style.width = "600px";
             el.style.height = "500px";
         

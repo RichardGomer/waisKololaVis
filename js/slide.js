@@ -50,6 +50,10 @@ function KVideo(apiclient, element)
         // Clear any existing renderings
         self.els = [];
         
+        var temp = document.createElement('div');
+        temp.setAttribute('class', 'temprender');
+        document.body.appendChild(temp);
+        
         //console.log("Rendering slides", self.slides);
         
         var snum = -1;
@@ -68,7 +72,19 @@ function KVideo(apiclient, element)
             
             self.els[snum] = document.createElement('div'); // Create an element to render into
             self.els[snum].setAttribute('id', 'slide_' + snum);
-            self.slides[snum].render(self.els[snum], next); // Render the slide and when it's done render the next one
+            
+            temp.appendChild(self.els[snum]);
+            
+            try
+            {
+                console.log("Render slide " + snum + " of " + self.els.length);
+                self.slides[snum].render(self.els[snum], next); // Render the slide and when it's done render the next one
+            }
+            catch(e)
+            {
+                console.log("Slide renderer crashed!", e, self.slides[snum]);   
+                next;
+            }
         }
         
         next();
