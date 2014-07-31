@@ -30,22 +30,9 @@ function KSlide_nameList(people)
                     index++;
                     countEvents();
                 } else {
-                    //put the results in el and then call cb_done        
-                    var color = d3.scale.linear()
-                            .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
-                            .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
-
-                    d3.layout.cloud().size([800, 300])
-                            .words(peopleEvents)
-                            .rotate(0)
-                            .fontSize(function(d) {
-                                return d.size;
-                            })
-                            .on("end", draw)
-                            .start();
-
-                    function draw(words) {
-                        var id = '#' + $(el).attr('id');
+                    var id = '#' + $(el).attr('id');
+                    $('#body').append(el);                    
+                    var draw = function(words) {
                         d3.select(id).append("svg")
                                 .attr("width", 850)
                                 .attr("height", 350)
@@ -70,6 +57,22 @@ function KSlide_nameList(people)
                                     return d.text;
                                 });
                     }
+                    
+                    //put the results in el and then call cb_done        
+                    var color = d3.scale.linear()
+                            .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
+                            .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+
+                    d3.layout.cloud().size([800, 300])
+                            .words(peopleEvents)
+                            .rotate(0)
+                            .fontSize(function(d) {
+                                return d.size;
+                            })
+                            .on("end", draw)
+                            .start();
+
+                    
 
                 }
             }, function() {
