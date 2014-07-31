@@ -1,3 +1,6 @@
 [submodule "client"]
 	path = client
 	url = https://github.com/RichardGomer/KOLOLA_JSClient.git
+[submodule "lib/reveal"]
+	path = lib/reveal
+	url = https://github.com/hakimel/reveal.js.git
