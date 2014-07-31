@@ -9,6 +9,7 @@
         <script src="js/slide.js"></script>
         <script src="js/slide_eventPhotos.js"></script>
         <script src="js/slide_peopleNames.js"></script>
+        <script src="js/slide_feature.js"></script>
     </head>
 
     <body>
@@ -21,12 +22,16 @@
             var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/"; // For example
             var client = new KOLOLA(endpoint_url);
 
-            client.query('%', function() {
-            }, function(people) {
-                var peopleNames = new KSlide_nameList(people);
-                peopleNames.render('#test', function() {
+            client.query('%', function(events) {
+                var impacts = new KSlide_feature(20, events);
+                impacts.render('#test', function(){
                     console.log("done!!!");
-                });
+                })
+            }, function(people) {
+                //var peopleNames = new KSlide_nameList(people);
+                //peopleNames.render('#test', function() {
+                //    console.log("done!!!");
+                //});
             });
 
             var pres = new KVideo(client);
