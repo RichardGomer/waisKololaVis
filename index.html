@@ -13,17 +13,28 @@
         <script src="js/slide_eventPhotos.js"></script>
         <script src="js/slide_peopleNames.js"></script>
         <script src="js/slide_collaboration.js"></script>
+        <script src="js/slide_feature.js"></script>
     </head>
 
     <body>
-
-        <h2>Test-a-rama</h2>
-
-        <div id="test"></div>
-
         <script>
+            
+            
         var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/";
         var client = new KOLOLA(endpoint_url);
+
+
+            client.query('%', function(events) {
+                var impacts = new KSlide_feature(26, events);
+                impacts.render('#test', function(){
+                    console.log("done!!!");
+                })
+            }, function(people) {
+                //var peopleNames = new KSlide_nameList(people);
+                //peopleNames.render('#test', function() {
+                //    console.log("done!!!");
+                //});
+            });
 
         var pres = new KVideo(client);
 

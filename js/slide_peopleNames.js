@@ -45,7 +45,8 @@ function KSlide_nameList(people)
                             .start();
 
                     function draw(words) {
-                        d3.select("#test").append("svg")
+                        var id = '#' + $(el).attr('id');
+                        d3.select(id).append("svg")
                                 .attr("width", 850)
                                 .attr("height", 350)
                                 .attr("class", "wordcloud")
