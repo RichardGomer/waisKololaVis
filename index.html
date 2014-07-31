@@ -3,43 +3,47 @@
     <head>
         <title>WAISFest</title>
         <script src="lib/jquery/jquery.js"></script>
+        <script src="lib/d3/d3.js"></script>
+        <script src="lib/d3/d3.layout.cloud.js"></script>
         <script src="client/kolola.js"></script>
         <script src="js/slide.js"></script>
         <script src="js/slide_eventPhotos.js"></script>
         <script src="js/slide_peopleNames.js"></script>
     </head>
-    
+
     <body>
-	
+
         <h2>Test-a-rama</h2>
-	
-	<script>
-		var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/"; // For example
-		var client = new KOLOLA(endpoint_url);
-		
+
+        <div id="test"></div>
+
+        <script>
+        var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/";
+        var client = new KOLOLA(endpoint_url);
+
         var pres = new KVideo(client);
-        
+
         function getCollabNet(events)
         {
             var edges = [];
-            for(var i in events)
+            for (var i in events)
             {
                 for(var p in events[i].people)
                 {
                     var personid = events[i].people[p];
-                    
-                    if(typeof edges[personid] === 'undefined')
+
+                    if (typeof edges[personid] === 'undefined')
                     {
                         edges[personid] = [];
                     }
-            
-                    for(var p2 in events[i].people)
+
+                    for (var p2 in events[i].people)
                     {
                         var personid2 = events[i].people[p2];
-                        
-                        if(typeof edges[personid][personid2] === 'undefined')
+
+                        if (typeof edges[personid][personid2] === 'undefined')
                         {
-                            edges[personid][personid2] = 1;   
+                            edges[personid][personid2] = 1;
                         }
                         else
                         {
@@ -48,12 +52,13 @@
                     }
                 }
             }
-            
+
             return edges;
         }
-        
+                
         function setup(data)
         {
+            console.log("Data received - Creating slides");
             
             // Slide of names
             var ppl = new KSlide_nameList(data.people);
@@ -64,19 +69,22 @@
             var collab = new KSlide_collaboration(net, data.people);
             pres.addSlide(collab);
             
+
             // Event photos for events that have photos
-            for(var i in data.events)
+            for (var i in data.events)
             {
                 var e = data.events[i];
-                
-                if(e.photos.length > 0)
+
+                if (e.photos.length > 0)
                 {
-                       var s = new KSlide_event(e);
+                    var s = new KSlide_event(e);
                 }
             }
-            
+        
+            console.log("Rendering slides");
             pres.render();
             
+            console.log("Dumping slides");
             var slides =  pres.getSlides();
             for(var i in slides)
             {
@@ -87,12 +95,7 @@
         // Get all events and people
         client.query('%', function(){}, function(){}, setup);
         
-        /*
-		var cbevents = function(events){ console.log("Received events", events); };
-		client.query('headley', cbevents);
-		*/
-        
 	</script>
-	
+
     </body>
 </html>
