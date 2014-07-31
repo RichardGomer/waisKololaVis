@@ -21,7 +21,7 @@
         
         function getCollabNet(events)
         {
-            var edges = {};
+            var edges = [];
             for(var i in events)
             {
                 for(var p in events[i].people)
@@ -30,9 +30,9 @@
                     
                     if(typeof edges[personid] === 'undefined')
                     {
-                        edges[personid] = {};
+                        edges[personid] = [];
                     }
-                    
+            
                     for(var p2 in events[i].people)
                     {
                         var personid2 = events[i].people[p2];
@@ -48,6 +48,8 @@
                     }
                 }
             }
+            
+            return edges;
         }
         
         function setup(data)
@@ -71,6 +73,14 @@
                 {
                        var s = new KSlide_event(e);
                 }
+            }
+            
+            pres.render();
+            
+            var slides =  pres.getSlides();
+            for(var i in slides)
+            {
+                document.body.appendChild(slides[i]);
             }
         }
         

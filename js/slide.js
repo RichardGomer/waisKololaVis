@@ -70,6 +70,14 @@ function KVideo(apiclient, element)
     }
     
     /**
+     * Get the rendered slide elements
+     */
+    self.getSlides = function()
+    {
+        return self.els;
+    }
+    
+    /**
      * Show the presentation - We assume it has already been rendered!
      *
      * cb_done is called when the presentation has finished
