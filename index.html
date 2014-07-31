@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WAISFest</title>
+        <script src="lib/jquery/jquery.js"></script>
+        <script src="client/kolola.js"></script>
+    </head>
+    
+    <body>
+	
+        <h2>Test-a-rama</h2>
+	
+	<script>
+		var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/"; // For example
+		var client = new KOLOLA(endpoint_url);
+		
+		var cbevents = function(events){ console.log("Received events", events); };
+		
+		client.query('headley', cbevents);
+		
+	</script>
+	
+    </body>
+</html>
