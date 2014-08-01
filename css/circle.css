@@ -1,0 +1,12 @@
+#circle circle {
+    fill: none;
+    pointer-events: all;
+}
+
+.group path {
+    fill-opacity: .3;
+}
+
+#circle:hover path.fade {
+    display: none;
+}
