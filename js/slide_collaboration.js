@@ -1,3 +1,36 @@
+        function getCollabNet(events)
+        {
+            var edges = {};
+            for (var i in events)
+            {
+                for(var p in events[i].people)
+                {
+                    var personid = events[i].people[p];
+
+                    if (typeof edges[personid] === 'undefined')
+                    {
+                        edges[personid] = {};
+                    }
+
+                    for (var p2 in events[i].people)
+                    {
+                        var personid2 = events[i].people[p2];
+
+                        if (typeof edges[personid][personid2] === 'undefined')
+                        {
+                            edges[personid][personid2] = 1;
+                        }
+                        else
+                        {
+                            edges[personid][personid2]++;
+                        }
+                    }
+                }
+            }
+
+            return edges;
+        }
+
 function KSlide_collaboration(net, people)
 {
     var self = this;

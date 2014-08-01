@@ -3,19 +3,31 @@
     <head>
         <title>WAISFest</title>
         <script src="lib/jquery/jquery.js"></script>
-        <script src="lib/d3/d3.js"></script>
+        <script src="lib/jquery.backstretch.min.js"></script>
+        
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
         <script src="lib/d3/d3.layout.cloud.js"></script>
+        
+        <!--
         <script src="lib/sigma/sigma.min.js"></script>
         <script src="lib/sigma/plugins/sigma.plugins.animate.min.js"></script>
         <script src="lib/sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
+        -->
+        
         <script src="client/kolola.js"></script>
+        
         <script src="js/slide.js"></script>
         <script src="js/slide_eventPhotos.js"></script>
         <script src="js/slide_peopleNames.js"></script>
         <script src="js/slide_collaboration.js"></script>
         <script src="js/slide_feature.js"></script>
+        <script src="js/slide_impactType.js"></script>
+        <script src="js/slide_connections.js"></script>
+        <script src="js/slide_title.js"></script>
+        
         <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" type="text/css" href="style.css" />
+        
     </head>
 
     <body>
@@ -27,40 +39,7 @@
         var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/";
         var client = new KOLOLA(endpoint_url);
 
-        var pres = new KVideo(client, document.getElementById('video'));
-
-        function getCollabNet(events)
-        {
-            var edges = {};
-            for (var i in events)
-            {
-                for(var p in events[i].people)
-                {
-                    var personid = events[i].people[p];
-
-                    if (typeof edges[personid] === 'undefined')
-                    {
-                        edges[personid] = {};
-                    }
-
-                    for (var p2 in events[i].people)
-                    {
-                        var personid2 = events[i].people[p2];
-
-                        if (typeof edges[personid][personid2] === 'undefined')
-                        {
-                            edges[personid][personid2] = 1;
-                        }
-                        else
-                        {
-                            edges[personid][personid2]++;
-                        }
-                    }
-                }
-            }
-
-            return edges;
-        }
+        var pres = new KVideo(126, document.getElementById('video'));
                 
         function setup(data)
         {
@@ -70,43 +49,106 @@
             var ppl = new KSlide_nameList(data.people, data.events);
             pres.addSlide(ppl);
             
+            // Types
+            var types = new KSlide_impactType(data.events);
+            pres.addSlide(types);
+            
             // Collaboration network
-            var net = getCollabNet(data.events);
-            var collab = new KSlide_collaboration(net, data.people);
+            var collab = new KSlide_connections(data);
             pres.addSlide(collab);
 
-            // Event photos for events that have photos
+            // Sort events into the interesting impact points ("features" / statements)
+            
+            var points = [22,21,23,10,13,16,18,17,9,26]; // The list of statements we care about
+            console.log("Categorising events by features", points);
+            
+            var eventsByPoint = {};
             for (var i in data.events)
             {
                 var e = data.events[i];
-
-                if (e.photos.length > 0)
+                
+                // Now see if this event has an of the interesting points associated with it!
+                // First one wins
+                for(var k in points)
                 {
-                    var s = new KSlide_EventPhotos(e, 1000);
-                    //console.log(s);
-                    pres.addSlide(s);
+                    var fid = points[k].toString();
+                    
+                    if(e.features.indexOf(fid) > -1)
+                    {
+                        if(typeof eventsByPoint[fid] === 'undefined')
+                            eventsByPoint[fid] = [];
+                        
+                        eventsByPoint[fid].push(e);
+                        break;
+                    }
                 }
+            }
+            console.log(eventsByPoint);
+            
+            console.log("Creating feature sections");
+            // Process each point in turn
+            for(var p in points)
+            {
+                pointID = points[p];
+                
+                // Look up the statement
+                for(var j in self.fw)
+                {
+                    statement = self.fw[j];
+                    
+                    if(statement.featureid == pointID.toString())
+                        break;
+                }
+                
+                if(eventsByPoint[pointID].length < 1)
+                {
+                    console.log("Feature is empty", pointID);
+                    continue;   
+                }
+                
+                console.log("Creating feature", pointID, statement);
+                
+                
+                
+                // Add the point/statement title
+                var title = new KSlide_title(statement.statement, 3000);
+                pres.addSlide(title);
+                
+                // For each event in this point, add a slide if possible
+                for(var i in eventsByPoint[pointID])
+                {
+                    var e = eventsByPoint[pointID][i];
+
+                    // Show photos if possible
+                    if (e.photos.length > 0)
+                    {
+                        var s = new KSlide_EventPhotos(e, data.people, 2500);
+                        //console.log(s);
+                        pres.addSlide(s);
+                    }
+                    // Otherwise try a reflection
+                    // TODO
+
+                    // Otherwise a video?
+                    // TODO
+                }
+                
             }
         
             var then = function()
             {
-                console.log("Dumping slides");
                 var slides =  pres.getSlides();
                 
-                console.log(slides);
-                for(var i in slides)
-                {
-                    document.body.appendChild(slides[i]);
-                }
-                
-                console.log("ACTION!");
+                console.log("READY!");
                 
                 // Make it loop!
                 var show = function(){
                     pres.show(show); 
                 }
                 
-                show;
+                document.getElementById('video').innerHTML = "READY! Click to begin";
+                
+                document.body.onclick = function(){ show(); };
             }
             
             console.log("Rendering slides");
@@ -114,8 +156,16 @@
         }
         
         // Get all events and people
-        console.log("Loading initial data");
-        client.query('%', function(){}, function(){}, setup);
+        var stage2 = function(fw){
+            self.fw = fw; // Stash the framework
+            console.log("Loading people + events");
+            client.query('%', function(){}, function(){}, setup);
+        };
+            
+        console.log("Loading framework");
+        client.getFramework(stage2);
+            
+            
         
 	</script>
 

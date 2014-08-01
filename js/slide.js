@@ -32,7 +32,7 @@ function KSlide(apiclient)
  *
  * apiclient is a KOLOLA apiclient and element is a DOM element that the presentation will be rendered into
  */
-function KVideo(apiclient, element)
+function KVideo(bpm, element)
 {
     var self = this;
     
@@ -40,9 +40,23 @@ function KVideo(apiclient, element)
     self.els = [];
     self.element = element;
     
+    self.bpm = bpm;
+    
     self.addSlide = function(slide)
     {
-        self.slides.push(slide);  
+        if(typeof slide.show !== 'function')
+        {
+            console.error("Cannot add slide with no show() method!", slide);   
+            return;
+        }
+        
+        if(typeof slide.render !== 'function')
+        {
+            console.error("Cannot add slide with no render() method!", slide);
+        }   
+        
+        self.slides.push(slide); 
+        
     };
     
     self.render = function(cb_done)
@@ -126,8 +140,18 @@ function KVideo(apiclient, element)
                 return;
             }
             
-            // TODO: Set a timeout that waits for the next transition point here
+            // Set a timeout that waits for the next transition point here
+            
+            // Current time
+            var now = (new Date).getTime() - startTime;
+            
+            // Which means we're on beat...
+            var msPerBeat = 1000*60 / self.bpm;
+            var beatMod = msPerBeat - (now % msPerBeat); // Get the ms until the next beat [ () = ms into current beat ]
+            
+            window.setTimeout(function(){
             self.transition(self.slides[snum], self.els[snum], next);
+            }, beatMod);
         }
         
         

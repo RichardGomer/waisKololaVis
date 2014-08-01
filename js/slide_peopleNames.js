@@ -16,6 +16,12 @@ function KSlide_nameList(people, events)
         var index = 0;
         var peopleEvents = new Array();
 
+        if(people.length < 1)
+        {
+            cb_done();
+            return;
+        }
+        
         // Count events by people
         for(var ei in events)
         {
@@ -76,7 +82,7 @@ function KSlide_nameList(people, events)
                         return d.size + "px";
                     })
                     .style("fill", function(d, i) {
-                        return color(i);
+                        return '#fff'; //color(i);
                     })
                     .attr("transform", function(d) {
                         return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
@@ -91,7 +97,7 @@ function KSlide_nameList(people, events)
                 .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
                 .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);*/
 
-        d3.layout.cloud().size([800, 800])
+        d3.layout.cloud().size([900, 700])
                 .words(counts)
                 .rotate(0)
                 .fontSize(function(d) {

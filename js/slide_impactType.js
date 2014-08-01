@@ -12,6 +12,8 @@ function KSlide_impactType(events)
         var client = new KOLOLA(endpoint_url);
         client.getFramework(function(fw) {
 
+            console.log("Received framework", fw);
+            
             //create a mapping of features to indictators
             //and create an objetc to count indicator occurrences
             var frameworkMappings = {};
@@ -156,17 +158,14 @@ function KSlide_impactType(events)
                             .call(xAxis)
                             .selectAll("g")
                             .delay(delay);
-                }            
+                }
+            
+            cb_done();
         });      
     }
 
     self.show = function(cb_done)
     {
-        // In here you probably don't need to do anything...
-
         window.setTimeout(cb_done, 5000);
     }
 }
-
-
-//KSlide_nameList.prototype();
