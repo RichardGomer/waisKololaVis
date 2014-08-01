@@ -14,16 +14,20 @@
         <script src="js/slide_peopleNames.js"></script>
         <script src="js/slide_collaboration.js"></script>
         <script src="js/slide_feature.js"></script>
+        <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,700' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="style.css" />
     </head>
 
     <body>
+        <div id="video">RENDERING...</div>
+        
         <script>
             
             
         var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/";
         var client = new KOLOLA(endpoint_url);
 
-        var pres = new KVideo(client);
+        var pres = new KVideo(client, document.getElementById('video'));
 
         function getCollabNet(events)
         {
@@ -78,14 +82,12 @@
 
                 if (e.photos.length > 0)
                 {
-                    var s = new KSlide_EventPhotos(e);
+                    var s = new KSlide_EventPhotos(e, 1000);
                     //console.log(s);
                     pres.addSlide(s);
                 }
             }
         
-           
-            
             var then = function()
             {
                 console.log("Dumping slides");
@@ -96,13 +98,18 @@
                 {
                     document.body.appendChild(slides[i]);
                 }
+                
+                console.log("ACTION!");
+                
+                pres.show(function(){pres.show()}); // Show, and repeat!
             }
             
             console.log("Rendering slides");
-            pres.render(then);
+            pres.render(then); //function(){window.setTimeout(then,100);}); // setTimeout gets back into global scope
         }
         
         // Get all events and people
+        console.log("Loading initial data");
         client.query('%', function(){}, function(){}, setup);
         
 	</script>

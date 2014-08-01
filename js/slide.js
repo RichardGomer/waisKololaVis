@@ -21,7 +21,7 @@ function KSlide(apiclient)
     self.render = function(el, cb_done) { };
     
     // This is called when the slide is displayed - It's passed a callback that should be called when the slide has finished
-    self.trigger = function(cb_done) { }; 
+    self.show = function(cb_done) { }; 
     
     
 }
@@ -72,19 +72,12 @@ function KVideo(apiclient, element)
             
             self.els[snum] = document.createElement('div'); // Create an element to render into
             self.els[snum].setAttribute('id', 'slide_' + snum);
+            self.els[snum].setAttribute('class', 'slide ' + self.slides[snum].constructor.name);
             
             temp.appendChild(self.els[snum]);
             
-            try
-            {
-                console.log("Render slide " + snum + " of " + self.els.length);
-                self.slides[snum].render(self.els[snum], next); // Render the slide and when it's done render the next one
-            }
-            catch(e)
-            {
-                console.log("Slide renderer crashed!", e, self.slides[snum]);   
-                next;
-            }
+            console.log("Render slide " + snum + " of " + self.els.length);
+            self.slides[snum].render(self.els[snum], next); // Render the slide and when it's done render the next one
         }
         
         next();
@@ -109,23 +102,44 @@ function KVideo(apiclient, element)
     self.show = function(cb_done)
     {
         var snum = 0;
+        
+        // TODO: Start the soundtrack - How will we know when it starts playing?
+        var startTime = (new Date).getTime();
+        
+        /**
+         * This function progresses to the next slide
+         *
+         * TODO: Wait until the next transition point in the soundtrack?
+         * TODO: Progress after a certain time limit if the slide itself doesn't call the progression itself?
+         */
         var next = function()
         {
             snum++;
             
             // If there are no slides, call the final callback and exit
-            if(snum <= self.slides.length)
+            if(snum >= self.slides.length)
             {
+                console.log("Presentation complete");
                 cb_done();
                 return;
             }
             
-            self.element.innerHTML = ''; // Clear the old slide out of the element
-            self.element.appendChild(self.els[snum]); // Append the new slide
-            self.slides[snum].trigger(next); // Render the slide and when it's done render the next one
+            // TODO: Set a timeout that waits for the next transition point here
+            self.transition(self.els[snum]);
         }
         
+        
         next();
+    }
+
+    
+    // Overload this method to change the transition style!
+    // It receives the next slide to be displayed and the callback that should be passed to its trigger method
+    self.transition = function(next, cb)
+    {
+        self.element.innerHTML = ''; // Clear the old slide out of the element
+        self.element.appendChild(next); // Append the new slide
+        next.trigger(cb); // Render the slide and when it's done render the next one
     }
 }
 
