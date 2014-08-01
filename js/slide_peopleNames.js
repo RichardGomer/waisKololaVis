@@ -18,24 +18,33 @@ function KSlide_nameList(people)
         var peopleEvents = new Array();
         countEvents();
 
-        function countEvents() {
+        function countEvents(then)
+        {
             var user = people[index];
             var username = user.username;
             var name = user.name;
             var client = new KOLOLA(self.endpoint_url);
-            client.query('user:' + username, function(events) {                
+            
+            client.query('user:' + username, function(events)
+            {                
                 var entry = {"text": name, "size": events.length};
                 peopleEvents.push(entry);
-                if (index < self.people.length - 1) {
+                
+                if (index < self.people.length - 1)
+                {
                     index++;
                     countEvents();
-                } else {
+                }
+                else
+                {
                     var id = '#' + $(el).attr('id');
-                    $('#body').append(el);                    
-                    var draw = function(words) {
+                    $('#body').append(el);  
+                    
+                    var draw = function(words)
+                    {
                         d3.select(id).append("svg")
-                                .attr("width", 850)
-                                .attr("height", 350)
+                                .attr("width", 900)
+                                .attr("height", 700)
                                 .attr("class", "wordcloud")
                                 .append("g")
                                 // without the transform, words words would get cutoff to the left and top, they would
@@ -69,7 +78,7 @@ function KSlide_nameList(people)
                             .fontSize(function(d) {
                                 return d.size;
                             })
-                            .on("end", draw)
+                            .on("end", function(words){draw(words); cb_done();})
                             .start();
 
                     
@@ -78,8 +87,6 @@ function KSlide_nameList(people)
             }, function() {
             }); //wants something for cbpeople so give it blank function;
         }
-
-        // In here you need to render the tag cloud into the given element, and call cb_done when you;re finished
     }
 
 
@@ -87,7 +94,7 @@ function KSlide_nameList(people)
     {
         // In here you probably don't need to do anything...
 
-        window.setTimeout(cb_done, 5000);
+        window.setTimeout(cb_done, 3000);
     }
 }
 

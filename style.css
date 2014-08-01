@@ -1,0 +1,73 @@
+html, body
+{
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #fff;
+    font-family: Raleway, helvetica, sans-serif;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.temprender
+{
+    overflow: hidden;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.slide
+{
+    margin: 2%;
+    width: 96%;
+    padding: 0;
+    height: 750px;
+    background: #222;
+    overflow: hidden;
+    position: relative;
+}
+
+.KSlide_nameList
+{
+    
+}
+
+.KSlide_EventPhotos
+{
+       
+}
+
+    .KSlide_EventPhotos h1
+    {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: 30px;
+        background: rgba(0,0,0,0.4);
+        color: #fff;
+        font-weight: semi-bold;
+    }
+
+    .KSlide_EventPhotos img:nth-of-type(1)
+    {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        border: 0;
+        max-height: 2000px;
+    }
+
+    .KSlide_EventPhotos img
+    {
+        width: 300px;
+        float: right;
+        margin: 30px;
+        position: relative;
+        border: 1px solid #fff;
+    }

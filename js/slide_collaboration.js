@@ -66,4 +66,9 @@ function KSlide_collaboration(net, people)
             s.startForceAtlas2();
             window.setTimeout(function(){s.stopForceAtlas2(); cb_done();}, 1500); 
     }
+    
+    self.show = function(cb)
+    {
+        window.setTimeout(cb, 3000);   
+    }
 }
