@@ -6,87 +6,99 @@
  * based on that list instead (to save on API calls)
  */
 
-function KSlide_nameList(people)
+function KSlide_nameList(people, events)
 {
     var self = this;
     self.people = people;
-    self.endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/";
 
     self.render = function(el, cb_done)
     {
         var index = 0;
         var peopleEvents = new Array();
-        countEvents();
 
-        function countEvents(then)
+        // Count events by people
+        for(var ei in events)
         {
-            var user = people[index];
-            var username = user.username;
-            var name = user.name;
-            var client = new KOLOLA(self.endpoint_url);
+            var e = events[ei];
             
-            client.query('user:' + username, function(events)
-            {                
-                var entry = {"text": name, "size": events.length};
-                peopleEvents.push(entry);
+            for(var pi in e.people)
+            {
+                var personid = e.people[pi];
                 
-                if (index < self.people.length - 1)
+                if(typeof peopleEvents[personid] == 'undefined')
                 {
-                    index++;
-                    countEvents();
+                    // find the person in the list of people
+                    for(var pi2 in people)
+                    {
+                        var person = people[pi2];
+                        if(person.personid === personid)
+                            break;
+                    }
+                    
+                    peopleEvents[personid] = {size: 1, text: person.name};
                 }
                 else
                 {
-                    var id = '#' + $(el).attr('id');
-                    $('#body').append(el);  
-                    
-                    var draw = function(words)
-                    {
-                        d3.select(id).append("svg")
-                                .attr("width", 900)
-                                .attr("height", 700)
-                                .attr("class", "wordcloud")
-                                .append("g")
-                                // without the transform, words words would get cutoff to the left and top, they would
-                                // appear outside of the SVG area
-                                .attr("transform", "translate(320,200)")
-                                .selectAll("text")
-                                .data(words)
-                                .enter().append("text")
-                                .style("font-size", function(d) {
-                                    return d.size + "px";
-                                })
-                                .style("fill", function(d, i) {
-                                    return color(i);
-                                })
-                                .attr("transform", function(d) {
-                                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                                })
-                                .text(function(d) {
-                                    return d.text;
-                                });
-                    }
-                    
-                    //put the results in el and then call cb_done        
-                    var color = d3.scale.linear()
-                            .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
-                            .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
-
-                    d3.layout.cloud().size([800, 300])
-                            .words(peopleEvents)
-                            .rotate(0)
-                            .fontSize(function(d) {
-                                return d.size;
-                            })
-                            .on("end", function(words){draw(words); cb_done();})
-                            .start();
-
-                    
-
+                    peopleEvents[personid].size++;
                 }
-            }, function() {
-            }); //wants something for cbpeople so give it blank function;
+            }
         }
+        
+        // 0-index peopleEvents, atm its done by person.PersonID
+        var counts = [];
+        for(var i in peopleEvents)
+        {
+            counts.push({text: peopleEvents[i].text, size: Math.log2(peopleEvents[i].size)});   
+        }
+        
+        
+        console.log(counts);
+        
+        // Draw the cloud
+
+        var id = '#' + $(el).attr('id');
+        $('#body').append(el);  
+
+        var draw = function(words)
+        {
+            d3.select(id).append("svg")
+                    .attr("width", 900)
+                    .attr("height", 700)
+                    .attr("class", "wordcloud")
+                    .append("g")
+                    // without the transform, words words would get cutoff to the left and top, they would
+                    // appear outside of the SVG area
+                    .attr("transform", "translate(320,200)")
+                    .selectAll("text")
+                    .data(words)
+                    .enter().append("text")
+                    .style("font-size", function(d) {
+                        return d.size + "px";
+                    })
+                    .style("fill", function(d, i) {
+                        return color(i);
+                    })
+                    .attr("transform", function(d) {
+                        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                    })
+                    .text(function(d) {
+                        return d.text;
+                    });
+        }
+
+        //put the results in el and then call cb_done        
+        var color = "#fff"; /*d3.scale.linear()
+                .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
+                .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);*/
+
+        d3.layout.cloud().size([800, 800])
+                .words(counts)
+                .rotate(0)
+                .fontSize(function(d) {
+                    return d.size;
+                })
+                .on("end", function(words){draw(words); cb_done();})
+                .start();
     }
 
 

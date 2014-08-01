@@ -67,7 +67,7 @@
             console.log("Data received - Creating slides");
             
             // Slide of names
-            var ppl = new KSlide_nameList(data.people);
+            var ppl = new KSlide_nameList(data.people, data.events);
             pres.addSlide(ppl);
             
             // Collaboration network
@@ -101,7 +101,12 @@
                 
                 console.log("ACTION!");
                 
-                pres.show(function(){pres.show()}); // Show, and repeat!
+                // Make it loop!
+                var show = function(){
+                    pres.show(show); 
+                }
+                
+                show;
             }
             
             console.log("Rendering slides");

@@ -106,6 +106,8 @@ function KVideo(apiclient, element)
         // TODO: Start the soundtrack - How will we know when it starts playing?
         var startTime = (new Date).getTime();
         
+        console.log("Begin presentation at " + startTime + " then ", cb_done);
+        
         /**
          * This function progresses to the next slide
          *
@@ -125,7 +127,7 @@ function KVideo(apiclient, element)
             }
             
             // TODO: Set a timeout that waits for the next transition point here
-            self.transition(self.els[snum]);
+            self.transition(self.slides[snum], self.els[snum], next);
         }
         
         
@@ -135,11 +137,12 @@ function KVideo(apiclient, element)
     
     // Overload this method to change the transition style!
     // It receives the next slide to be displayed and the callback that should be passed to its trigger method
-    self.transition = function(next, cb)
+    self.transition = function(slide, el, cb)
     {
+        console.log("Transition to", slide, el);
         self.element.innerHTML = ''; // Clear the old slide out of the element
-        self.element.appendChild(next); // Append the new slide
-        next.trigger(cb); // Render the slide and when it's done render the next one
+        self.element.appendChild(el); // Append the new slide
+        slide.show(cb); // Render the slide and when it's done render the next one
     }
 }
 
