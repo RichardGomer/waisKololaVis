@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html class="ocks-org do-not-copy">
+<meta charset="utf-8">
+<title>Uber Rides by Neighborhood</title>
+<style>
+
+#circle circle {
+  fill: none;
+  pointer-events: all;
+}
+
+.group path {
+  fill-opacity: .5;
+}
+
+path.chord {
+  stroke: #000;
+  stroke-width: .25px;
+}
+
+#circle:hover path.fade {
+  display: none;
+}
+
+</style>
+
+<header>
+  <aside>January 9, 2012</aside>
+  <a href="../" rel="author">Mike Bostock</a>
+</header>
+
+<h1>Uber Rides by Neighborhood</h1>
+
+<aside>Mouseover to focus on rides to or from a single neighbor&shy;hood.
+
+<p>The thickness of links be&shy;tween neighborhoods encodes the relative frequency of rides between two neighborhoods: thicker links represent more frequent rides.
+
+<p>Links are directed: for exam&shy;ple, while 2.2% of rides go from South of Market to Downtown, only 1.2% go in the opposite direction. Links are colored by the more fre&shy;quent origin.
+
+<p>Scroll down for more!
+
+<p>Built with <a href="http://d3js.org/">d3.js</a>.</aside>
+
+<script src="http://d3js.org/d3.v2.min.js?2.8.1"></script>
+<script>
+
+var width = 720,
+    height = 720,
+    outerRadius = Math.min(width, height) / 2 - 10,
+    innerRadius = outerRadius - 24;
+
+var formatPercent = d3.format(".1%");
+
+var arc = d3.svg.arc()
+    .innerRadius(innerRadius)
+    .outerRadius(outerRadius);
+
+var layout = d3.layout.chord()
+    .padding(.04)
+    .sortSubgroups(d3.descending)
+    .sortChords(d3.ascending);
+
+var path = d3.svg.chord()
+    .radius(innerRadius);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("id", "circle")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+svg.append("circle")
+    .attr("r", outerRadius);
+
+d3.csv("cities.csv", function(cities) {
+  d3.json("matrix.json", function(matrix) {
+      console.log(matrix);
+    // Compute the chord layout.
+    layout.matrix(matrix);
+
+    // Add a group per neighborhood.
+    var group = svg.selectAll(".group")
+        .data(layout.groups)
+      .enter().append("g")
+        .attr("class", "group")
+        .on("mouseover", mouseover);
+
+    // Add a mouseover title.
+    group.append("title").text(function(d, i) {
+        console.log(d);
+      return cities[i].name + ": " + formatPercent(d.value) + " of origins";
+    });
+
+    // Add the group arc.
+    var groupPath = group.append("path")
+        .attr("id", function(d, i) { return "group" + i; })
+        .attr("d", arc)
+        .style("fill", function(d, i) { return cities[i].color; });
+
+    // Add a text label.
+    var groupText = group.append("text")
+        .attr("x", 6)
+        .attr("dy", 15);
+
+    groupText.append("textPath")
+        .attr("xlink:href", function(d, i) { return "#group" + i; })
+        .text(function(d, i) { return cities[i].name; });
+
+    // Remove the labels that don't fit. :(
+    groupText.filter(function(d, i) { return groupPath[0][i].getTotalLength() / 2 - 16 < this.getComputedTextLength(); })
+        .remove();
+
+    // Add the chords.
+    var chord = svg.selectAll(".chord")
+        .data(layout.chords)
+      .enter().append("path")
+        .attr("class", "chord")
+        .style("fill", function(d) { return cities[d.source.index].color; })
+        .attr("d", path);
+
+    // Add an elaborate mouseover title for each chord.
+    chord.append("title").text(function(d) {
+      return cities[d.source.index].name
+          + " → " + cities[d.target.index].name
+          + ": " + formatPercent(d.source.value)
+          + "\n" + cities[d.target.index].name
+          + " → " + cities[d.source.index].name
+          + ": " + formatPercent(d.target.value);
+    });
+
+    function mouseover(d, i) {
+      chord.classed("fade", function(p) {
+        return p.source.index != i
+            && p.target.index != i;
+      });
+    }
+  });
+});
+
+</script>
+
+<p class="attribution">Source: <a href="http://blog.uber.com/2012/01/09/uberdata-san-franciscomics/">Uber Blog</a>.
+
+<p>I enjoyed <a href="http://blog.uber.com/2012/01/09/uberdata-san-franciscomics/">Bradley Voytek’s post</a> today analyzing the frequency of rides between various neighborhoods in San Francisco. However, I wondered if an alternative network visualization might better reveal patterns or anomalies in the data. Complex networks (a.k.a. “hairballs”) are hard to visualize well!
+
+<p>This dataset is particularly interesting because it has directed edges. For example, there are twice as many rides from South of Market to Downtown than in the opposite direction. You can’t see directionality in the original visualization because only a single edge is drawn between each node. (Or perhaps  the smaller edge is occluded by the larger one.)
+
+<p>Some alternatives I considered:
+
+<p>A <a href="http://mbostock.github.com/protovis/ex/matrix.html">matrix diagram</a> visualizes the <i>adjacency matrix</i> of the network by showing a two-dimensional grid; each cell in the grid encodes the relative frequency of rides from neighborhood <i>i</i> to neighborhood <i>j</i>. These are great for finding clusters (with appropriate sorting) and central components, and for looking at individual connections. Unlike a node-link diagram, though, you can’t use geography for positioning.
+
+<p>A <a href="http://mbostock.github.com/d3/ex/chord.html">chord diagram</a> arranges the nodes (neighborhoods) radially, drawing thick curves between nodes. The thickness of the curve encodes the frequency of rides between two neighborhoods. Like matrix diagrams, chord diagrams reveal asymmetries: if a chord is tapered, there are more rides <i>from</i> a given neighborhood than <i>to</i> it. The above chord diagram might be better reordered to correspond with geography.
+
+<p>If I had more time, I might also take a look at <a href="http://www.hiveplot.net/">hive plots</a>, which are a bit like radial <a href="http://bl.ocks.org/1341281">parallel coordinates</a>. I’m not sure what axes I’d use for this dataset, though.
+
+<p style="margin-top:4em;">Caveats: I am not affiliated with Uber. I do not have access to source data, so my transcription may be inaccurate. This page merely serves to illustrate different types of network visualizations.
+
+<footer>
+  <aside>January 9, 2012</aside>
+  <a href="../" rel="author">Mike Bostock</a>
+</footer>
+
+<script>
+
+GoogleAnalyticsObject = "ga", ga = function() { ga.q.push(arguments); }, ga.q = [], ga.l = +new Date;
+ga("create", "UA-48272912-3", "ocks.org");
+ga("send", "pageview");
+
+</script>
+<script async src="//www.google-analytics.com/analytics.js"></script>
