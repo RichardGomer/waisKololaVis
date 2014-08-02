@@ -8,8 +8,10 @@ function KSlide_connections(all)
     self.endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/";
 
     self.render = function(el, cb_done)
-    {        
-        var colourMappings = ["#2c5ba1", "#739000", "#ff8c0f"];
+    {                
+        $("#" + el.id).addClass('KSlide_Connections');
+        
+        var colourMappings = ["#2c5ba1", "#739000", "#ff8c0f"];                       
         
         //go through each person and give each an array of people to number of times worked with
         var people = self.people;
@@ -28,11 +30,13 @@ function KSlide_connections(all)
             }
         }
         
-        //now go through all events
+        //now go through all events (also count total number of people at events)
+        var totalPeople = 0;
         var events = self.events;
         for (var i = 0; i < events.length; i++) {
             //for each event go through each person
             var eventPeople = events[i].people;
+            totalPeople = totalPeople + eventPeople.length;
             
             //sort the list of people at the event
             var sortedList = [];
@@ -45,12 +49,37 @@ function KSlide_connections(all)
                 //for each person at the event go through the list of the people at the event and count them as a person worked with                
                 var personid = sortedList[j];
                 for (var x = 0; x < sortedList.length; x++) {
-                    data[mappings[personid]][mappings[sortedList[x]]]++;
+                    if (x !== j){
+                        data[mappings[personid]][mappings[sortedList[x]]]++;
+                    }
                 }
             }
         }
         
-        //now display them in the graph!
+        //work out average number of people at events
+        var eventAvg = totalPeople / self.events.length;
+        
+        //work out the average number of people worked with and the most sociaable
+        //for each person count how many people they have worked with
+        var totalWorkedWith = 0;
+        var maxWorkedWith = 0;
+        var mostSociable;
+        for(var i = 0; i < data.length; i++){
+            var workedWith = 0;
+            for (var j = i + 1; j < data.length; j++){
+                if(data[i][j] !== 0){
+                    totalWorkedWith++;
+                    workedWith++;
+                }
+            }
+            if (workedWith > maxWorkedWith){
+                maxWorkedWith = workedWith;
+                mostSociable = names[i];                
+            }
+        }
+        var avgWorkedWith = totalWorkedWith / data.length;
+        
+        //now display them in the graph!       
         var width = 720,
                 height = 720,
                 outerRadius = Math.min(width, height) / 2 - 10,
@@ -75,7 +104,7 @@ function KSlide_connections(all)
                 .attr("id", "circle")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-        svg.append("circle")
+        var circle = svg.append("circle")
                 .attr("r", outerRadius);
 
         // Compute the chord layout.
@@ -102,7 +131,8 @@ function KSlide_connections(all)
         // Add a text label.
         var groupText = group.append("text")
                 .attr("x", 6)
-                .attr("dy", 15);
+                .attr("dy", 15)
+                .attr("fill", "white");
         
         groupText.append("textPath")
             .attr("xlink:href", function(d, i) { return "#group" + i; })
@@ -111,8 +141,7 @@ function KSlide_connections(all)
         // Remove the labels that don't fit. (all of them in this case!!)
         groupText.filter(function(d, i) {
             return groupPath[0][i].getTotalLength() / 2 - 16 < this.getComputedTextLength();
-        })
-                .remove();
+        }).remove();
         
         // Add the chords.
         var chord = svg.selectAll(".chord")
@@ -136,7 +165,55 @@ function KSlide_connections(all)
                 return p.source.index != i
                         && p.target.index != i;
             });
-        }
+        } 
+        
+        function rotate() {
+            console.log("start first");
+            d3.select("#circle").transition().duration(60000).attr("transform", "translate(360,360)rotate(180)")
+                    .each("end", function() {
+                        console.log("start second");
+                        d3.select('#circle').transition().duration(60000).attr("transform", "translate(360,360)rotate(359)")
+                                .each("end", function() {
+                                    console.log("start third");
+                                    d3.select('#circle').transition().duration(1).attr("transform", "translate(360,360)rotate(0)")
+                                            .each("end", function() {
+                                                rotate();
+                                            });
+                                });
+                    });
+        }        
+        rotate();
+        
+        //add some extra detail
+        $detail = $('<div class="detail"></div>');
+        //a title
+        $detail.append('<h2>Collaboration Network</h2>');
+        
+        //total number of events
+        $totalEventsDesc = $('<div class="stat"></div>');
+        $totalEventsDesc.append('DTC members have organised, contributed to, or attended <b>' +
+            self.events.length + '</b> different events in total!');
+        $detail.append($totalEventsDesc);
+        
+        //average number of people at events
+        $eventAvgDesc = $('<div class="stat"></div>');
+        $eventAvgDesc.append('On average each activity has involved <b>' + eventAvg.toFixed(2) + '</b> students');
+        $detail.append($eventAvgDesc);
+        
+        //average number worked with
+        $avgWorkedWithDesc = $('<div class="stat"></div>');
+        $avgWorkedWithDesc.append('And on average each person has worked with <b>' 
+                + avgWorkedWith.toFixed(0) + 
+                '</b> other members of the DTC.');
+        $detail.append($avgWorkedWithDesc);
+        
+        //most sociable
+        $mostSociableDesc = $('<div class="stat"></div>');
+        $mostSociableDesc.append('(<b>' + mostSociable + '</b> is the most sociable having worked with <b>' +
+                maxWorkedWith + '</b> other people)');
+        $detail.append($mostSociableDesc);        
+        
+        $("#" + el.id).append($detail);                
         
         cb_done();
     }

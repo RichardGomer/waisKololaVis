@@ -10,3 +10,19 @@
 #circle:hover path.fade {
     display: none;
 }
+
+.KSlide_Connections{
+ 
+}
+
+.KSlide_Connections .detail{
+    margin-top: 100px;
+    margin-left: 15px;
+    display: inline-block;
+    vertical-align: top;
+    width: 35%;
+}
+
+.KSlide_Connections .detail .stat{
+    margin-top: 10px;
+}
