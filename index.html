@@ -67,7 +67,7 @@
             pres.addSlide(types);
             
             // Collaboration network
-            var collab = new KSlide_connections(data, 10000);
+            var collab = new KSlide_connections(data, 10000, [0,1]);
             pres.addSlide(collab);
 
             // Sort events into the interesting impact points ("features" / statements)
@@ -100,6 +100,7 @@
             
             console.log("Creating feature sections");
             // Process each point in turn
+            var knum = 1; // Statement number in rotating network thing
             for(var p in points)
             {
                 pointID = points[p];
@@ -144,7 +145,15 @@
                     // TODO
                 }
                 
+                if(knum < 4)
+                {
+                    knum++;
+                    var collab = new KSlide_connections(data, 10000, [knum]);
+                    pres.addSlide(collab);
+                }
+                
             }
+            
         
             //credits slide
             var credits = new KSlide_credits(data.people);
@@ -162,7 +171,7 @@
                     audio.pause();
                     //audio.fastSeek(0);
                     audio.play();
-                    pres.show(show); 
+                    pres.show();  // pass show as a callback in here to make it loop!
                 }
                 
                 document.getElementById('video').innerHTML = "READY! Click to begin";
