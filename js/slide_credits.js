@@ -50,6 +50,6 @@ function KSlide_credits(people)
             $('.entries').scrollTop(pos + 2);
         }, 50);
         
-        window.setTimeout(cb_done, 60000);
+        window.setTimeout(cb_done, 120000);
     }
 }
