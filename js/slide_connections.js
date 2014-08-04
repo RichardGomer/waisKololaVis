@@ -1,11 +1,12 @@
 
-function KSlide_connections(all, duration)
+function KSlide_connections(all, duration, facts)
 {
     var self = this;
     self.all = all;
     self.people = all.people;
     self.events = all.events;
     self.endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/";
+    self.facts = facts;
     self.duration = duration;
 
     self.render = function(el, cb_done)
@@ -192,7 +193,8 @@ function KSlide_connections(all, duration)
         //a title
         $title = $('<div class="stat stat-' + self.detailsCount + '"></div>');
         $title.append("<h2>Collaboration Network</h2>Which DTC students have been working with each other");
-        $detail.append($title);        
+        $detail.append($title);   
+        $title.hide();
         self.detailsCount++;
         
         //total number of events
@@ -231,20 +233,32 @@ function KSlide_connections(all, duration)
     }
 
     self.show = function(cb_done)
-    {
+    {        
         //calculate interval
-        var interval = self.duration / self.detailsCount;
-        //show the various details
-        var detailIndex = 1;        
-        setInterval(function(){
-            //fade the previous comment
-            $('.stat-' + (detailIndex-1)).fadeOut(300, function(){
-                $('.stat-' + detailIndex).fadeIn(300, function(){
-                    detailIndex++;
-                });
-            });            
-        }, interval);
+        var interval = self.duration / self.facts.length;
         
+        var nextFact = function(){
+            if (index === 0){
+                console.log("show first stat!!!");
+                $('.stat-' + self.facts[index]).fadeIn(300, function(){
+                    index++;
+                });
+            }else{
+                console.log("show next stat!!!");
+                //fade the previous comment
+                $('.stat-' + self.facts[index-1]).fadeOut(300, function(){
+                    $('.stat-' + self.facts[index]).fadeIn(300, function(){
+                        index++;
+                    });
+                });
+            }
+        }
+        
+        //show the various details
+        var index = 0;
+        nextFact();
+        setInterval(nextFact, interval);
+            
         // In here you probably don't need to do anything...
         window.setTimeout(cb_done, self.duration);
     }

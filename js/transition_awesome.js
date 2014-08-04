@@ -58,7 +58,7 @@ function awesomeTransition(video, slide, el, cb)
         
         var newA = ((A - lastA) * progress) + lastA;
         var newpos = "translateZ("+(-1*Math.round(radius))+"px) rotateY("+(-1* Math.round(newA*1000)/1000)+"rad)";
-        console.log(progress, "Rotate container to", newpos, "versus slide", el.style.transform);
+        //console.log(progress, "Rotate container to", newpos, "versus slide", el.style.transform);
         
         container.style.transform = newpos;
             
