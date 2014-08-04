@@ -77,8 +77,10 @@ function KSlide_connections(all, duration, facts)
                 }
             }
             if (workedWith > maxWorkedWith){
-                maxWorkedWith = workedWith;
-                mostSociable = names[i];                
+                if ((i !== 0) && (i !== 1)){
+                    maxWorkedWith = workedWith;
+                    mostSociable = names[i];      
+                }
             }
         }
         var avgWorkedWith = totalWorkedWith / data.length;
