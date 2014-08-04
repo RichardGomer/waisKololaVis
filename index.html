@@ -67,7 +67,7 @@
             pres.addSlide(types);
             
             // Collaboration network
-            var collab = new KSlide_connections(data, 10000, [0,1]);
+            var collab = new KSlide_connections(data, 10000, [0,1], 'ID0');
             pres.addSlide(collab);
 
             // Sort events into the interesting impact points ("features" / statements)
@@ -145,15 +145,15 @@
                     // TODO
                 }
                 
-                if(knum < 4)
+                knum++;
+                if(knum < 5)
                 {
-                    knum++;
-                    var collab = new KSlide_connections(data, 10000, [knum]);
+                    var collab = new KSlide_connections(data, 4000, [knum], 'ID'+knum);
                     pres.addSlide(collab);
                 }
                 else
                 {
-                    var collab = new KSlide_connections(data, 10000, []);
+                    var collab = new KSlide_connections(data, 2000, [], 'ID'+knum);
                     pres.addSlide(collab);
                 }
                 
