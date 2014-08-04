@@ -50,7 +50,10 @@ function KSlide_feature(feature, events)
                     break;
                 }
             }
-        });
+            
+             cb_done();
+        }
+        );
     }
 
 

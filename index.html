@@ -8,6 +8,8 @@
         <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
         <script src="lib/d3/d3.layout.cloud.js"></script>
         
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.13.1/TweenMax.min.js"></script>
+        
         <!--
         <script src="lib/sigma/sigma.min.js"></script>
         <script src="lib/sigma/plugins/sigma.plugins.animate.min.js"></script>
@@ -25,6 +27,8 @@
         <script src="js/slide_connections.js"></script>
         <script src="js/slide_title.js"></script>
         <script src="js/slide_credits.js"></script>
+        
+        <script src="js/transition_awesome.js"></script>
         
         <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" type="text/css" href="style.css" />
@@ -115,7 +119,8 @@
                 
                 
                 // Add the point/statement title
-                var title = new KSlide_title(statement.statement, 3000);
+                //var title = new KSlide_title(statement.statement, 3000);
+                var title = new KSlide_feature(statement.featureid, eventsByPoint[pointID]);
                 pres.addSlide(title);
                 
                 // For each event in this point, add a slide if possible
@@ -154,6 +159,8 @@
                 
                 document.body.onclick = function(){ show(); };
             }
+            
+            pres.transition = awesomeTransition;
             
             console.log("Rendering slides");
             pres.render(then); //function(){window.setTimeout(then,100);}); // setTimeout gets back into global scope

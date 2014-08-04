@@ -168,7 +168,7 @@ function KVideo(bpm, element)
             var beatMod = msPerBeat - (now % msPerBeat); // Get the ms until the next beat [ () = ms into current beat ]
             
             window.setTimeout(function(){
-            self.transition(self.slides[snum], self.els[snum], next);
+                self.transition(self, self.slides[snum], self.els[snum], next);
             }, beatMod);
         }
         
@@ -184,7 +184,7 @@ function KVideo(bpm, element)
     
     // Overload this method to change the transition style!
     // It receives the next slide to be displayed and the callback that should be passed to its trigger method
-    self.transition = function(slide, el, cb)
+    self.transition = function(video, slide, el, cb)
     {
         console.log("Transition to", slide, el);
         self.element.innerHTML = ''; // Clear the old slide out of the element
