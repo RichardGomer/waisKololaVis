@@ -1,0 +1,40 @@
+.KSlide_feature{
+ 
+}
+
+.KSlide_feature .feature{
+    height: 400px;
+    margin-top: 20px;   
+    margin-left:auto;
+    margin-right:auto;
+    width: 90%;
+}
+
+.KSlide_feature .feature-statement{
+    display:inline-block;
+    margin-top: 20px;
+    font-size: 3em;
+    max-width: 70%;
+}
+
+.KSlide_feature .feature-count{
+    vertical-align: top;
+    margin-left: 10%;
+    font-size: 10em;
+    display:inline-block;
+}
+
+.KSlide_feature .images{
+    margin-top: 20px;   
+    margin-left:auto;
+    margin-right:auto;
+    width: 90%;
+}
+
+.KSlide_feature .images img{
+    max-height: 200px;
+    width: 300px;
+    margin-right: 10px;
+    border: 1px solid #fff;
+}
+
