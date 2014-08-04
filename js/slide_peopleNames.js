@@ -13,6 +13,8 @@ function KSlide_nameList(people, events)
 
     self.render = function(el, cb_done)
     {
+        console.log("people names");
+        
         var index = 0;
         var peopleEvents = new Array();
 

@@ -6,7 +6,7 @@ function KSlide_credits(people)
 
     self.render = function(el, cb_done)
     {              
-        $('#' + el.id).addClass('KSlide_Credits');
+        console.log("credits!!!");
         
         //sort people into alphabetical order
         function compare(a,b) {
@@ -19,7 +19,8 @@ function KSlide_credits(people)
         self.people.sort(compare);
         
         //display the names
-        $('#' + el.id).append('<div class="title">You have been watching...</div>');
+        var $el = $(el);
+        $el.append('<div class="title">You have been watching...</div>');
         $entries = $('<div></div>');
         $entries.addClass('entries');
         for(var i = 0; i < self.people.length; i++){  
@@ -38,18 +39,19 @@ function KSlide_credits(people)
             }
             $entries.append($entry);            
         }
-        $('#test').append($entries);
-               
-        setInterval(function() {
-            var pos = $entries.scrollTop();
-            $entries.scrollTop(pos + 2);
-        }, 100);
+        $el.append($entries);                       
 
-        
+        cb_done();
     }
 
     self.show = function(cb_done)
     {
+        console.log("cue credits");
+        setInterval(function() {
+            var pos = $('.entries').scrollTop();
+            $('.entries').scrollTop(pos + 2);
+        }, 100);
+        
         window.setTimeout(cb_done, 5000);
     }
 }
