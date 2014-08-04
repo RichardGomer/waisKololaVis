@@ -6,8 +6,6 @@ function KSlide_credits(people)
 
     self.render = function(el, cb_done)
     {              
-        console.log("credits!!!");
-        
         //sort people into alphabetical order
         function compare(a,b) {
             if (a.name < b.name)
@@ -44,7 +42,6 @@ function KSlide_credits(people)
 
     self.show = function(cb_done)
     {
-        console.log("cue credits");
         setInterval(function() {
             var pos = $('.entries').scrollTop();
             $('.entries').scrollTop(pos + 2);

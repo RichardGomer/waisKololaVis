@@ -78,7 +78,7 @@ function KSlide_connections(all, duration, facts, id)
                 }
             }
             if (workedWith > maxWorkedWith){
-                if ((i !== 0) && (i !== 1)){
+                if ((i !== 0) && (i !== 1)){ //modesty if statement
                     maxWorkedWith = workedWith;
                     mostSociable = names[i];      
                 }
@@ -176,13 +176,10 @@ function KSlide_connections(all, duration, facts, id)
         } 
         
         function rotate() {
-            console.log("start first");
             d3.select("#circle" + self.id).transition().duration(60000).attr("transform", "translate(360,360)rotate(180)")
                     .each("end", function() {
-                        console.log("start second");
                         d3.select('#circle' + self.id).transition().duration(60000).attr("transform", "translate(360,360)rotate(359)")
                                 .each("end", function() {
-                                    console.log("start third");
                                     d3.select('#circle' + self.id).transition().duration(1).attr("transform", "translate(360,360)rotate(0)")
                                             .each("end", function() {
                                                 rotate();
@@ -193,77 +190,52 @@ function KSlide_connections(all, duration, facts, id)
         rotate();
         
                     
-        self.detailsCount = 0;
+        self.details = [];
         //a title
-        $title = $('<div class="stat stat-' + self.detailsCount + '"></div>');
-        $title.append("<h2>Collaboration Network</h2>Which DTC students have been working with each other");
-        $detail.append($title);   
-        $title.hide();
-        self.detailsCount++;
+        self.details.push("<h2>Collaboration Network</h2>Which DTC students have been working with each other")
         
         //total number of events
-        $totalEventsDesc = $('<div class="stat stat-' + self.detailsCount + '"></div>');
-        $totalEventsDesc.append('DTC members have organised, contributed to, or attended <b>' +
+        self.details.push('DTC members have organised, contributed to, or attended <b>' +
             self.events.length + '</b> different events in total!');
-        $detail.append($totalEventsDesc);
-        $totalEventsDesc.hide();
-        self.detailsCount++;
         
         //average number of people at events
-        $eventAvgDesc = $('<div class="stat stat-' + self.detailsCount + '"></div>');
-        $eventAvgDesc.append('On average each activity has involved <b>' + eventAvg.toFixed(2) + '</b> students');
-        $detail.append($eventAvgDesc);
-        $eventAvgDesc.hide();
-        self.detailsCount++;
+        self.details.push('On average each activity has involved <b>' + eventAvg.toFixed(2) + '</b> students');
         
         //average number worked with
-        $avgWorkedWithDesc = $('<div class="stat stat-' + self.detailsCount + '"></div>');
-        $avgWorkedWithDesc.append('And on average each person has worked with <b>' 
+        self.details.push('And on average each person has worked with <b>' 
                 + avgWorkedWith.toFixed(0) + 
                 '</b> other members of the DTC.');
-        $detail.append($avgWorkedWithDesc);
-        $avgWorkedWithDesc.hide();
-        self.detailsCount++;        
         
         //most sociable
-        $mostSociableDesc = $('<div class="stat stat-' + self.detailsCount + '"></div>');
-        $mostSociableDesc.append('(<b>' + mostSociable + '</b> is the most sociable having worked with <b>' +
+        self.details.push('(<b>' + mostSociable + '</b> is the most sociable having worked with <b>' +
                 maxWorkedWith + '</b> other people)');
-        $detail.append($mostSociableDesc); 
-        $mostSociableDesc.hide();
-        self.detailsCount++;
         
         cb_done();
-    }
+    };
 
     self.show = function(cb_done)
-    {        console.log("the facts..." + self.facts);
+    {
         //calculate interval
         var interval = self.duration / self.facts.length; 
         var index = 0;
-        var nextFact = function(){
-            if (index === 0){
-                console.log("show first stat!!!");
-                $('#' + self.id +  ' .stat-' + self.facts[index]).fadeIn(300, function(){
-                    console.log("incrementing the index..." + index);
-                    index++;
-                });
-            }else{
-                console.log("show next stat!!!");
-                //fade the previous comment
-                console.log("index..." + index);
-                $('#' + self.id +  ' .stat-' + self.facts[index-1]).fadeOut(300, function(){
-                    console.log("faindg out the div");
-                    $('#' + self.id +  ' .stat-' + self.facts[index]).fadeIn(300, function(){
-                        index++;
-                    });
-                });
-            }
-        }
+        $detail = $('<div class="stat"></div>');
+        $('#' + self.id).append($detail);
+        $detail.hide();
+        var showFact = function(){                
+            $detail.append(self.details[self.facts[index]]);                          
+            index++;
+            $detail.fadeIn(1000);
+        };
         
-        //show the various details
-        nextFact();
-        var ongoing = setInterval(nextFact, interval); 
+        //show the first stat and then set up changes at intervals
+        showFact();
+        var ongoing = setInterval(function(){
+            $detail.fadeOut(1000, function(){
+                $detail.empty();
+                showFact();
+            });        
+        }, interval); 
+        
         // In here you probably don't need to do anything...
         window.setTimeout(function(){
             window.clearInterval(ongoing); 

@@ -54,16 +54,19 @@
                 
         function setup(data)
         {
-            console.log("Data received - Creating slides");                                   
-            
+            console.log("Data received - Creating slides");         
             //First slide doesn't seem to show (but in this case names is broken anyway so probably for the best right now!)
             
-            // Slide of names
+            // Surplus slide because the first always gets omitted!
             var ppl = new KSlide_nameList(data.people, data.events);
             pres.addSlide(ppl);
             
+            // Slide of names
+            var ppl2 = new KSlide_nameList(data.people, data.events);
+            pres.addSlide(ppl2);
+            
             // Types
-            var types = new KSlide_impactType(data.events);
+            var types = new KSlide_impactType(data.events, self.fw);
             pres.addSlide(types);
             
             // Collaboration network
@@ -123,7 +126,7 @@
                 console.log("Creating feature", pointID, statement);                
                                 
                 // Add the point/statement title
-                var title = new KSlide_feature(statement.featureid, eventsByPoint[pointID], 2500);
+                var title = new KSlide_feature(statement.featureid, data.events, self.fw, 2500);
                 pres.addSlide(title);
                 
                 // For each event in this point, add a slide if possible
@@ -155,11 +158,9 @@
                 {
                     var collab = new KSlide_connections(data, 2000, [], 'ID'+knum);
                     pres.addSlide(collab);
-                }
-                
+                }                
             }
             
-        
             //credits slide
             var credits = new KSlide_credits(data.people);
             pres.addSlide(credits);
@@ -201,7 +202,7 @@
         client.getFramework(stage2);
             
         function stop(){
-            console.log("presentation stoppped!!!");
+            console.log("Presentation stopped");
             event.stopPropagation();
             pres.stop();
         }    

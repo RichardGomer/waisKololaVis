@@ -63,20 +63,19 @@ function KSlide_nameList(people, events)
         console.log(counts);
         
         // Draw the cloud
-
         var id = '#' + $(el).attr('id');
         $('#body').append(el);  
 
         var draw = function(words)
         {
             d3.select(id).append("svg")
-                    .attr("width", 900)
-                    .attr("height", 700)
+                    .attr("width", 720)
+                    .attr("height", 720)
                     .attr("class", "wordcloud")
                     .append("g")
                     // without the transform, words words would get cutoff to the left and top, they would
                     // appear outside of the SVG area
-                    .attr("transform", "translate(320,200)")
+                    .attr("transform", "translate(320,320)")
                     .selectAll("text")
                     .data(words)
                     .enter().append("text")
@@ -99,12 +98,13 @@ function KSlide_nameList(people, events)
                 .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
                 .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);*/
 
-        d3.layout.cloud().size([900, 700])
+        d3.layout.cloud().size([720, 720])
                 .words(counts)
                 .rotate(0)
                 .fontSize(function(d) {
-                    return d.size;
+                    return (d.size * 8);
                 })
+                        .padding(6)
                 .on("end", function(words){draw(words); console.log("done!!"); cb_done();})
                 .start();
     }
