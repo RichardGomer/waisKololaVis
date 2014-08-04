@@ -10,6 +10,8 @@
         
         <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.13.1/TweenMax.min.js"></script>
         
+        <script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+        
         <!--
         <script src="lib/sigma/sigma.min.js"></script>
         <script src="lib/sigma/plugins/sigma.plugins.animate.min.js"></script>
@@ -43,11 +45,12 @@
         <div id="video">RENDERING...</div>
         <script>
             
+            var ytplayer = false;
             
         var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/";
         var client = new KOLOLA(endpoint_url);
         
-        var pres = new KVideo(126, document.getElementById('video'));
+        var pres = new KVideo(64, document.getElementById('video'));
                 
         function setup(data)
         {
@@ -64,7 +67,7 @@
             pres.addSlide(types);
             
             // Collaboration network
-            var collab = new KSlide_connections(data, 10000, [1, 2]);
+            var collab = new KSlide_connections(data, 10000, [0,1]);
             pres.addSlide(collab);
 
             // Sort events into the interesting impact points ("features" / statements)
@@ -97,6 +100,7 @@
             
             console.log("Creating feature sections");
             // Process each point in turn
+            var knum = 1; // Statement number in rotating network thing
             for(var p in points)
             {
                 pointID = points[p];
@@ -119,7 +123,7 @@
                 console.log("Creating feature", pointID, statement);                
                                 
                 // Add the point/statement title
-                var title = new KSlide_feature(statement.featureid, eventsByPoint[pointID], 5000);
+                var title = new KSlide_feature(statement.featureid, eventsByPoint[pointID], 3500);
                 pres.addSlide(title);
                 
                 // For each event in this point, add a slide if possible
@@ -130,7 +134,7 @@
                     // Show photos if possible
                     if (e.photos.length > 0)
                     {
-                        var s = new KSlide_EventPhotos(e, data.people, 2500);
+                        var s = new KSlide_EventPhotos(e, data.people, 1800);
                         console.log(s);
                         pres.addSlide(s);
                     }
@@ -141,7 +145,20 @@
                     // TODO
                 }
                 
+                if(knum < 4)
+                {
+                    knum++;
+                    var collab = new KSlide_connections(data, 10000, [knum]);
+                    pres.addSlide(collab);
+                }
+                else
+                {
+                    var collab = new KSlide_connections(data, 10000, []);
+                    pres.addSlide(collab);
+                }
+                
             }
+            
         
             //credits slide
             var credits = new KSlide_credits(data.people);
@@ -151,22 +168,26 @@
             {
                 var slides =  pres.getSlides();
                 
-                console.log("READY!");
+                console.log("SLIDES READY<br />");
                 
                 // Make it loop!
                 var show = function(){
-                    pres.show(show); 
+                    var audio = document.getElementById('audio');
+                    audio.pause();
+                    //audio.fastSeek(0);
+                    audio.play();
+                    pres.show();  // pass show as a callback in here to make it loop!
                 }
                 
                 document.getElementById('video').innerHTML = "READY! Click to begin";
                 
-                document.body.onclick = function(){ show(); };
+                document.body.onclick = function(){  show(); };
             }
             
             pres.transition = awesomeTransition;
             
             console.log("Rendering slides");
-            pres.render(then); //function(){window.setTimeout(then,100);}); // setTimeout gets back into global scope
+            pres.render(then);
         }
         
         // Get all events and people
@@ -190,6 +211,8 @@
         <div id="controls">
             <input id="stop" type="button" value="stop" onclick="stop();" />            
         </div>
+        
+        <audio id="audio" src="audio.mp3" preload="auto" type="audio/mp3" controls></audio>
 
     </body>
 </html>
