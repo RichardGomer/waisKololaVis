@@ -11,8 +11,6 @@ function KSlide_impactType(events)
         var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/"; // For example
         var client = new KOLOLA(endpoint_url);
         client.getFramework(function(fw) {
-
-            console.log("Received framework", fw);
             
             //create a mapping of features to indictators
             //and create an objetc to count indicator occurrences
@@ -67,7 +65,7 @@ function KSlide_impactType(events)
                     .scale(y)
                     .orient("left");
 
-            var svg = d3.select("body").append("svg")
+            var svg = d3.select("#" + el.id).append("svg")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g")

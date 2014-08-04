@@ -24,21 +24,25 @@
         <script src="js/slide_impactType.js"></script>
         <script src="js/slide_connections.js"></script>
         <script src="js/slide_title.js"></script>
+        <script src="js/slide_credits.js"></script>
         
         <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" type="text/css" href="style.css" />
+        <link rel="stylesheet" type="text/css" href="css/bars.css" />
+        <link rel="stylesheet" type="text/css" href="css/circle.css" />
+        <link rel="stylesheet" type="text/css" href="css/credits.css" />
         
     </head>
 
     <body>
         <div id="video">RENDERING...</div>
-        
+        <div id="test" class="KSlide_Credits"></div>
         <script>
             
             
         var endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/";
         var client = new KOLOLA(endpoint_url);
-
+        
         var pres = new KVideo(126, document.getElementById('video'));
                 
         function setup(data)
