@@ -1,15 +1,18 @@
 
-function KSlide_connections(all)
+function KSlide_connections(all, duration)
 {
     var self = this;
     self.all = all;
     self.people = all.people;
     self.events = all.events;
     self.endpoint_url = "http://www.wsdtc.deimpact.org.uk/api/1/";
+    self.duration = duration;
 
     self.render = function(el, cb_done)
     {                
-        $("#" + el.id).addClass('KSlide_Connections');
+        //create a details panel
+        $detail = $('<div class="detail"></div>');
+        $("#" + el.id).append($detail);
         
         var colourMappings = ["#2c5ba1", "#739000", "#ff8c0f"];                       
         
@@ -184,45 +187,66 @@ function KSlide_connections(all)
         }        
         rotate();
         
-        //add some extra detail
-        $detail = $('<div class="detail"></div>');
+                    
+        self.detailsCount = 0;
         //a title
-        $detail.append('<h2>Collaboration Network</h2>');
+        $title = $('<div class="stat stat-' + self.detailsCount + '"></div>');
+        $title.append("<h2>Collaboration Network</h2>Which DTC students have been working with each other");
+        $detail.append($title);        
+        self.detailsCount++;
         
         //total number of events
-        $totalEventsDesc = $('<div class="stat"></div>');
+        $totalEventsDesc = $('<div class="stat stat-' + self.detailsCount + '"></div>');
         $totalEventsDesc.append('DTC members have organised, contributed to, or attended <b>' +
             self.events.length + '</b> different events in total!');
         $detail.append($totalEventsDesc);
+        $totalEventsDesc.hide();
+        self.detailsCount++;
         
         //average number of people at events
-        $eventAvgDesc = $('<div class="stat"></div>');
+        $eventAvgDesc = $('<div class="stat stat-' + self.detailsCount + '"></div>');
         $eventAvgDesc.append('On average each activity has involved <b>' + eventAvg.toFixed(2) + '</b> students');
         $detail.append($eventAvgDesc);
+        $eventAvgDesc.hide();
+        self.detailsCount++;
         
         //average number worked with
-        $avgWorkedWithDesc = $('<div class="stat"></div>');
+        $avgWorkedWithDesc = $('<div class="stat stat-' + self.detailsCount + '"></div>');
         $avgWorkedWithDesc.append('And on average each person has worked with <b>' 
                 + avgWorkedWith.toFixed(0) + 
                 '</b> other members of the DTC.');
         $detail.append($avgWorkedWithDesc);
+        $avgWorkedWithDesc.hide();
+        self.detailsCount++;        
         
         //most sociable
-        $mostSociableDesc = $('<div class="stat"></div>');
+        $mostSociableDesc = $('<div class="stat stat-' + self.detailsCount + '"></div>');
         $mostSociableDesc.append('(<b>' + mostSociable + '</b> is the most sociable having worked with <b>' +
                 maxWorkedWith + '</b> other people)');
-        $detail.append($mostSociableDesc);        
-        
-        $("#" + el.id).append($detail);                
+        $detail.append($mostSociableDesc); 
+        $mostSociableDesc.hide();
+        self.detailsCount++;
         
         cb_done();
     }
 
     self.show = function(cb_done)
     {
+        //calculate interval
+        var interval = self.duration / self.detailsCount;
+        //show the various details
+        var detailIndex = 1;        
+        setInterval(function(){
+            //fade the previous comment
+            $('.stat-' + (detailIndex-1)).fadeOut(300, function(){
+                $('.stat-' + detailIndex).fadeIn(300, function(){
+                    detailIndex++;
+                });
+            });            
+        }, interval);
+        
         // In here you probably don't need to do anything...
-
-        window.setTimeout(cb_done, 5000);
+        window.setTimeout(cb_done, self.duration);
     }
 }
 

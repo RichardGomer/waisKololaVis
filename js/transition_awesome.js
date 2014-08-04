@@ -14,8 +14,8 @@ function awesomeTransition(video, slide, el, cb)
         
         main.style.perspective = "5000px";
         //main.style.border = "1px solid red";
-        main.style.width = "500px";
-        main.style.height = "350px";
+        main.style.width = "1024px";
+        main.style.height = "768px";
         
         //container.style.border = "1px solid lime";
         container.style.position = "absolute";
