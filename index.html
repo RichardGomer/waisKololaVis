@@ -47,19 +47,21 @@
                 
         function setup(data)
         {
-            console.log("Data received - Creating slides");                        
+            console.log("Data received - Creating slides");                                   
+            
+            //First slide doesn't seem to show (but in this case names is broken anyway so probably for the best right now!)
             
             // Slide of names
-            //var ppl = new KSlide_nameList(data.people, data.events);
-            //pres.addSlide(ppl);
+            var ppl = new KSlide_nameList(data.people, data.events);
+            pres.addSlide(ppl);
             
             // Types
             var types = new KSlide_impactType(data.events);
             pres.addSlide(types);
             
             // Collaboration network
-            //var collab = new KSlide_connections(data);
-            //pres.addSlide(collab);
+            var collab = new KSlide_connections(data);
+            pres.addSlide(collab);
 
             // Sort events into the interesting impact points ("features" / statements)
             
@@ -138,8 +140,8 @@
             }
         
             //credits slide
-            //var credits = new KSlide_credits(data.people);
-            //pres.addSlide(credits);
+            var credits = new KSlide_credits(data.people);
+            pres.addSlide(credits);
         
             var then = function()
             {

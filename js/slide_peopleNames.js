@@ -105,7 +105,7 @@ function KSlide_nameList(people, events)
                 .fontSize(function(d) {
                     return d.size;
                 })
-                .on("end", function(words){draw(words); cb_done();})
+                .on("end", function(words){draw(words); console.log("done!!"); cb_done();})
                 .start();
     }
 

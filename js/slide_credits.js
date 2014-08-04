@@ -27,16 +27,14 @@ function KSlide_credits(people)
             $entry = $('<div></div>');
             $entry.addClass('entry');
             $name = $('<div class="name">' + self.people[i].name + '</div>');
-            $avatar = $('<div class="avatar"><img src="' + self.people[i].avatar + '"/></div>');                                
+            $avatarLeft = $('<div class="avatar avatar-left"></div>');
+            $avatarRight = $('<div class="avatar avatar-right"></div>');
             if (i % 2 === 0){          
-                $avatar.addClass('left');
-                $entry.append($avatar);
-                $entry.append($name);                
+                $avatarLeft.append('<img src="' + self.people[i].avatar + '"/>');
             }else{
-                $avatar.addClass('right');
-                $entry.append($name);
-                $entry.append($avatar);                
+                $avatarRight.append('<img src="' + self.people[i].avatar + '"/>');         
             }
+            $entry.append($avatarLeft).append($name).append($avatarRight);
             $entries.append($entry);            
         }
         $el.append($entries);                       
@@ -50,8 +48,8 @@ function KSlide_credits(people)
         setInterval(function() {
             var pos = $('.entries').scrollTop();
             $('.entries').scrollTop(pos + 2);
-        }, 100);
+        }, 50);
         
-        window.setTimeout(cb_done, 5000);
+        window.setTimeout(cb_done, 60000);
     }
 }
