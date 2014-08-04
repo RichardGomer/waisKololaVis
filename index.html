@@ -32,6 +32,7 @@
         
         <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" type="text/css" href="style.css" />
+        <link rel="stylesheet" type="text/css" href="css/feature.css" />
         <link rel="stylesheet" type="text/css" href="css/bars.css" />
         <link rel="stylesheet" type="text/css" href="css/circle.css" />
         <link rel="stylesheet" type="text/css" href="css/credits.css" />
@@ -40,7 +41,6 @@
 
     <body>
         <div id="video">RENDERING...</div>
-        <div id="test" class="KSlide_Credits"></div>
         <script>
             
             
@@ -51,7 +51,9 @@
                 
         function setup(data)
         {
-            console.log("Data received - Creating slides");
+            console.log("Data received - Creating slides");                                   
+            
+            //First slide doesn't seem to show (but in this case names is broken anyway so probably for the best right now!)
             
             // Slide of names
             var ppl = new KSlide_nameList(data.people, data.events);
@@ -114,13 +116,10 @@
                     continue;   
                 }
                 
-                console.log("Creating feature", pointID, statement);
-                
-                
-                
+                console.log("Creating feature", pointID, statement);                
+                                
                 // Add the point/statement title
-                //var title = new KSlide_title(statement.statement, 3000);
-                var title = new KSlide_feature(statement.featureid, eventsByPoint[pointID]);
+                var title = new KSlide_feature(statement.featureid, eventsByPoint[pointID], 5000);
                 pres.addSlide(title);
                 
                 // For each event in this point, add a slide if possible
@@ -132,7 +131,7 @@
                     if (e.photos.length > 0)
                     {
                         var s = new KSlide_EventPhotos(e, data.people, 2500);
-                        //console.log(s);
+                        console.log(s);
                         pres.addSlide(s);
                     }
                     // Otherwise try a reflection
@@ -143,6 +142,10 @@
                 }
                 
             }
+        
+            //credits slide
+            var credits = new KSlide_credits(data.people);
+            pres.addSlide(credits);
         
             var then = function()
             {
@@ -176,12 +179,16 @@
         console.log("Loading framework");
         client.getFramework(stage2);
             
-            
+        function stop(){
+            console.log("presentation stoppped!!!");
+            event.stopPropagation();
+            pres.stop();
+        }    
         
 	</script>
         
         <div id="controls">
-            
+            <input id="stop" type="button" value="stop" onclick="stop();" />            
         </div>
 
     </body>

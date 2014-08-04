@@ -1,40 +1,44 @@
-.KSlide_Credits{
+.KSlide_credits{
     text-align: center;
 }
 
-.KSlide_Credits .title{
+.KSlide_credits .title{
     margin-top: 5px;
     margin-bottom: 20px;
 }
 
-.KSlide_Credits .entries{
-    height: 400px;
+.KSlide_credits .entries{
+    height: 500px;
     overflow-y: hidden;
 }
 
-.KSlide_Credits .entries .entry{
+.KSlide_credits .entries .entry{
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
-.KSlide_Credits .entries .entry .avatar{
+.KSlide_credits .entries .entry .avatar{
     display: inline-block;
     vertical-align: middle;
+    width: 50px;
 }
 
-.KSlide_Credits .entries .entry .avatar.left{
-    margin-right: 5px;
+.KSlide_credits .entries .entry .avatar-left{
+    margin-right: 10px;
 }
 
-.KSlide_Credits .entries .entry .avatar.right{
-    margin-left: 5px;
+.KSlide_credits .entries .entry .avatar-right{
+    margin-left: 10px;
 }
 
-.KSlide_Credits .entries .entry .avatar img{
+.KSlide_credits .entries .entry .name{
+    display: inline-block;
+    vertical-align: middle;
+    text-align:center;
+    width: 20%;
+}
+
+.KSlide_credits .entries .entry .avatar img{
     width: 50px;
     height: 50px;
-}
-
-.KSlide_Credits .entries .entry .name{
-    display: inline-block;
 }

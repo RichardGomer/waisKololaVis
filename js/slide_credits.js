@@ -6,7 +6,7 @@ function KSlide_credits(people)
 
     self.render = function(el, cb_done)
     {              
-        $('#' + el.id).addClass('KSlide_Credits');
+        console.log("credits!!!");
         
         //sort people into alphabetical order
         function compare(a,b) {
@@ -19,37 +19,37 @@ function KSlide_credits(people)
         self.people.sort(compare);
         
         //display the names
-        $('#' + el.id).append('<div class="title">You have been watching...</div>');
+        var $el = $(el);
+        $el.append('<div class="title">You have been watching...</div>');
         $entries = $('<div></div>');
         $entries.addClass('entries');
         for(var i = 0; i < self.people.length; i++){  
             $entry = $('<div></div>');
             $entry.addClass('entry');
             $name = $('<div class="name">' + self.people[i].name + '</div>');
-            $avatar = $('<div class="avatar"><img src="' + self.people[i].avatar + '"/></div>');                                
+            $avatarLeft = $('<div class="avatar avatar-left"></div>');
+            $avatarRight = $('<div class="avatar avatar-right"></div>');
             if (i % 2 === 0){          
-                $avatar.addClass('left');
-                $entry.append($avatar);
-                $entry.append($name);                
+                $avatarLeft.append('<img src="' + self.people[i].avatar + '"/>');
             }else{
-                $avatar.addClass('right');
-                $entry.append($name);
-                $entry.append($avatar);                
+                $avatarRight.append('<img src="' + self.people[i].avatar + '"/>');         
             }
+            $entry.append($avatarLeft).append($name).append($avatarRight);
             $entries.append($entry);            
         }
-        $('#test').append($entries);
-               
-        setInterval(function() {
-            var pos = $entries.scrollTop();
-            $entries.scrollTop(pos + 2);
-        }, 100);
+        $el.append($entries);                       
 
-        
+        cb_done();
     }
 
     self.show = function(cb_done)
     {
-        window.setTimeout(cb_done, 5000);
+        console.log("cue credits");
+        setInterval(function() {
+            var pos = $('.entries').scrollTop();
+            $('.entries').scrollTop(pos + 2);
+        }, 50);
+        
+        window.setTimeout(cb_done, 60000);
     }
 }
