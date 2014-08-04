@@ -123,7 +123,7 @@
                 console.log("Creating feature", pointID, statement);                
                                 
                 // Add the point/statement title
-                var title = new KSlide_feature(statement.featureid, eventsByPoint[pointID], 3500);
+                var title = new KSlide_feature(statement.featureid, eventsByPoint[pointID], 2500);
                 pres.addSlide(title);
                 
                 // For each event in this point, add a slide if possible
@@ -134,7 +134,7 @@
                     // Show photos if possible
                     if (e.photos.length > 0)
                     {
-                        var s = new KSlide_EventPhotos(e, data.people, 1800);
+                        var s = new KSlide_EventPhotos(e, data.people, 1300);
                         console.log(s);
                         pres.addSlide(s);
                     }

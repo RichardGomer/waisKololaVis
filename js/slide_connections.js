@@ -1,7 +1,8 @@
 
-function KSlide_connections(all, duration, facts)
+function KSlide_connections(all, duration, facts, id)
 {
     var self = this;
+    self.id = id;
     self.all = all;
     self.people = all.people;
     self.events = all.events;
@@ -12,7 +13,7 @@ function KSlide_connections(all, duration, facts)
     self.render = function(el, cb_done)
     {                
         //create a details panel
-        $detail = $('<div class="detail"></div>');
+        $detail = $('<div id="' + self.id + '" class="detail"></div>');
         $("#" + el.id).append($detail);
         
         var colourMappings = ["#2c5ba1", "#739000", "#ff8c0f"];                       
@@ -107,7 +108,8 @@ function KSlide_connections(all, duration, facts)
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("id", "circle")
+                .attr("id", "circle" + self.id)
+                .attr("class", "circle")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
         var circle = svg.append("circle")
@@ -175,13 +177,13 @@ function KSlide_connections(all, duration, facts)
         
         function rotate() {
             console.log("start first");
-            d3.select("#circle").transition().duration(60000).attr("transform", "translate(360,360)rotate(180)")
+            d3.select("#circle" + self.id).transition().duration(60000).attr("transform", "translate(360,360)rotate(180)")
                     .each("end", function() {
                         console.log("start second");
-                        d3.select('#circle').transition().duration(60000).attr("transform", "translate(360,360)rotate(359)")
+                        d3.select('#circle' + self.id).transition().duration(60000).attr("transform", "translate(360,360)rotate(359)")
                                 .each("end", function() {
                                     console.log("start third");
-                                    d3.select('#circle').transition().duration(1).attr("transform", "translate(360,360)rotate(0)")
+                                    d3.select('#circle' + self.id).transition().duration(1).attr("transform", "translate(360,360)rotate(0)")
                                             .each("end", function() {
                                                 rotate();
                                             });
@@ -235,21 +237,24 @@ function KSlide_connections(all, duration, facts)
     }
 
     self.show = function(cb_done)
-    {        
+    {        console.log("the facts..." + self.facts);
         //calculate interval
-        var interval = self.duration / self.facts.length;
-        
+        var interval = self.duration / self.facts.length; 
+        var index = 0;
         var nextFact = function(){
             if (index === 0){
                 console.log("show first stat!!!");
-                $('.stat-' + self.facts[index]).fadeIn(300, function(){
+                $('#' + self.id +  ' .stat-' + self.facts[index]).fadeIn(300, function(){
+                    console.log("incrementing the index..." + index);
                     index++;
                 });
             }else{
                 console.log("show next stat!!!");
                 //fade the previous comment
-                $('.stat-' + self.facts[index-1]).fadeOut(300, function(){
-                    $('.stat-' + self.facts[index]).fadeIn(300, function(){
+                console.log("index..." + index);
+                $('#' + self.id +  ' .stat-' + self.facts[index-1]).fadeOut(300, function(){
+                    console.log("faindg out the div");
+                    $('#' + self.id +  ' .stat-' + self.facts[index]).fadeIn(300, function(){
                         index++;
                     });
                 });
@@ -257,12 +262,13 @@ function KSlide_connections(all, duration, facts)
         }
         
         //show the various details
-        var index = 0;
         nextFact();
-        setInterval(nextFact, interval);
-            
+        var ongoing = setInterval(nextFact, interval); 
         // In here you probably don't need to do anything...
-        window.setTimeout(cb_done, self.duration);
+        window.setTimeout(function(){
+            window.clearInterval(ongoing); 
+            cb_done();
+        }, self.duration);
     }
 }
 
