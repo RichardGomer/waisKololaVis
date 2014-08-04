@@ -54,7 +54,7 @@ function KSlide_nameList(people, events)
         var counts = [];
         for(var i in peopleEvents)
         {
-            counts.push({text: peopleEvents[i].text, size: Math.log2(peopleEvents[i].size)});   
+            counts.push({text: peopleEvents[i].text, size: Math.log(peopleEvents[i].size)});   
         }
         
         

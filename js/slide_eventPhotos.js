@@ -16,6 +16,15 @@
             el.appendChild(h = document.createElement('h1'));
             h.innerHTML = event.name;
             
+            // Add location and date info
+            var syear = (event.startdate.split('-'))[0];
+            var eyear = (event.enddate.split('-'))[0];          
+            
+            var d;
+            el.appendChild(d = document.createElement('div'));
+            d.className = 'info';
+            d.innerHTML = "<span class=\"location\">" + event.location + "</span> <span class=\"date\">" + syear + (syear != eyear ? (" - " + eyear) : "") + "</span>";
+            
             // Add people avatars
             var p;
             el.appendChild(p = document.createElement('div'));
@@ -50,10 +59,10 @@
                 img.push(event.photos[i].url);   
             }
             
-            $(self.el).backstretch(img, {duration: time-200, fade: 200});
+            var jel = $(self.el).backstretch(img, {duration: time-200, fade: 200});
             
             window.setTimeout(function(){cb();}, time*event.photos.length);   
-            window.setTimeout(function(){$(self.el).backstretch("destroy", false);}, time * event.photos.length + 1000);
+            window.setTimeout(function(){jel.backstretch("destroy", false);}, time * event.photos.length + 1000);
         }
  }
  

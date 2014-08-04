@@ -42,6 +42,9 @@ function KVideo(bpm, element)
     
     self.bpm = bpm;
     
+    self.running = false;
+    self.runcount = 0;
+
     self.addSlide = function(slide)
     {
         if(typeof slide.show !== 'function')
@@ -120,6 +123,12 @@ function KVideo(bpm, element)
         // TODO: Start the soundtrack - How will we know when it starts playing?
         var startTime = (new Date).getTime();
         
+        if(self.running)
+        {
+            console.log("Presentation is already running!");
+            return;
+        }
+        
         console.log("Begin presentation at " + startTime + " then ", cb_done);
         
         /**
@@ -128,20 +137,29 @@ function KVideo(bpm, element)
          * TODO: Wait until the next transition point in the soundtrack?
          * TODO: Progress after a certain time limit if the slide itself doesn't call the progression itself?
          */
+        self.running = true;
+        self.runcount++;
+        var runCount = self.runcount;
         var next = function()
         {
             snum++;
+            
+            // If the presentation has been stopped (or restarted), do nothing
+            if(!self.running || self.runcount != runCount)
+            {
+                return;
+            }
             
             // If there are no slides, call the final callback and exit
             if(snum >= self.slides.length)
             {
                 console.log("Presentation complete");
+                self.running = false;
                 cb_done();
                 return;
             }
             
-            // Set a timeout that waits for the next transition point here
-            
+            // Wait for the next beat before transitioning
             // Current time
             var now = (new Date).getTime() - startTime;
             
@@ -156,6 +174,11 @@ function KVideo(bpm, element)
         
         
         next();
+    }
+    
+    self.stop = function()
+    {
+        self.running = false;   
     }
 
     
