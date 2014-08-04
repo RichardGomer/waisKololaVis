@@ -42,6 +42,16 @@ function KSlide_impactType(events)
                 data.push({"indicator" : indicator, "count" : indicatorCount[indicator]});
             }
             
+            //order the data
+            function compare(a,b) {
+                if (a.count > b.count)
+                    return -1;
+                if (a.count < b.count)
+                    return 1;
+                return 0;
+            }            
+            data.sort(compare);            
+            
             //now draw the graph
             var margin = {top: 20, right: 20, bottom: 120, left: 40},
             width = 960 - margin.left - margin.right,
@@ -66,9 +76,10 @@ function KSlide_impactType(events)
                     .orient("left");
 
             var svg = d3.select("#" + el.id).append("svg")
-                    .attr("width", width + margin.left + margin.right)
+                    .attr("width", 720)
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g")
+                    .style("fill", "white")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             x.domain(data.map(function(d) {
@@ -85,6 +96,7 @@ function KSlide_impactType(events)
                     .call(xAxis)
                     .selectAll("text")
                     .style("text-anchor", "end")
+                    .style("fill", "white")
                     .attr("dx", "-.8em")
                     .attr("dy", ".15em")
                     .attr("transform", function(d) {
@@ -99,6 +111,7 @@ function KSlide_impactType(events)
                     .attr("y", 6)
                     .attr("dy", ".71em")
                     .style("text-anchor", "end")
+                    .style("fill", "white")
                     .text("Frequency");
 
                 svg.selectAll(".bar")
@@ -158,12 +171,43 @@ function KSlide_impactType(events)
                             .delay(delay);
                 }
             
+            //add some descriptive text
+            $el = $(el);
+            $detail = $('<div class="detail"></div>');
+            $detail.append('<h2>Impacts Achieved</h2>');                        
+            
+            //most common impact
+            $commonImpact = $('<div class="stat"></div>');
+            $commonImpact.append('The most common type of impact was <b>' + data[0].indicator + 
+                    '</b> with <b>' + data[0].count + '</b> different events!');             
+            $detail.append($commonImpact);
+            
+            //range of impacts covered
+            var indicatorsCovered = 0;
+            var totalIndicators = 0;
+            for(var indicator in indicatorCount){
+                totalIndicators++;
+                if (indicatorCount[indicator] > 0){
+                    indicatorsCovered++;
+                }
+            }
+            var impactRange = indicatorsCovered / totalIndicators * 100;
+            $impactRange = $('<div class="stat"></div>');
+            $impactRange.append('With <b>' + impactRange + '%</b> of potential indicators of impact being achieved.');          
+            $detail.append($impactRange);
+            
+            
+            $el.append($detail);
+            
             cb_done();
         });      
     }
 
     self.show = function(cb_done)
     {
+        
+        
+        
         window.setTimeout(cb_done, 5000);
     }
 }
