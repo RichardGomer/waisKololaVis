@@ -18,20 +18,22 @@ function KSlide_credits(people)
         
         //display the names
         var $el = $(el);
-        $el.append('<div class="title">You have been watching...</div>');
-        $entries = $('<div></div>');
-        $entries.addClass('entries');
-        for(var i = 0; i < self.people.length; i++){  
-            $entry = $('<div></div>');
+
+        var $entries = $('<div class="entries"><span class="title">You have been watching...</span></div>');
+        for(var i = 0; i < self.people.length; i++)
+        {  
+            var $entry = $('<div></div>');
             $entry.addClass('entry');
-            $name = $('<div class="name">' + self.people[i].name + '</div>');
-            $avatarLeft = $('<div class="avatar avatar-left"></div>');
-            $avatarRight = $('<div class="avatar avatar-right"></div>');
+            
+            var $name = $('<div class="name">' + self.people[i].name + '</div>');
+            var $avatarLeft = $('<div class="avatar avatar-left"></div>');
+            var $avatarRight = $('<div class="avatar avatar-right"></div>');
             if (i % 2 === 0){          
                 $avatarLeft.append('<img src="' + self.people[i].avatar + '"/>');
             }else{
                 $avatarRight.append('<img src="' + self.people[i].avatar + '"/>');         
             }
+            
             $entry.append($avatarLeft).append($name).append($avatarRight);
             $entries.append($entry);            
         }
@@ -42,11 +44,15 @@ function KSlide_credits(people)
 
     self.show = function(cb_done)
     {
-        setInterval(function() {
+        var scroll = function()
+        {
             var pos = $('.entries').scrollTop();
-            $('.entries').scrollTop(pos + 2);
-        }, 50);
+            $('.entries').scrollTop(pos + 3);
+            window.setTimeout(scroll, 30);
+        }
         
-        window.setTimeout(cb_done, 120000);
+        window.setTimeout(scroll, 30);
+        
+        window.setTimeout(cb_done, 240000);
     }
 }

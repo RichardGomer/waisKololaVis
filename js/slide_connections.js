@@ -13,7 +13,7 @@ function KSlide_connections(all, duration, facts, id)
     self.render = function(el, cb_done)
     {                
         //create a details panel
-        $detail = $('<div id="' + self.id + '" class="detail"></div>');
+        var $detail = $('<div id="' + self.id + '" class="detail"></div>');
         $("#" + el.id).append($detail);
         
         var colourMappings = ["#2c5ba1", "#739000", "#ff8c0f"];                       
@@ -78,10 +78,10 @@ function KSlide_connections(all, duration, facts, id)
                 }
             }
             if (workedWith > maxWorkedWith){
-                if ((i !== 0) && (i !== 1)){ //modesty if statement
+                //if ((i !== 0) && (i !== 1)){ //modesty if statement
                     maxWorkedWith = workedWith;
                     mostSociable = names[i];      
-                }
+                //}
             }
         }
         var avgWorkedWith = totalWorkedWith / data.length;
@@ -174,21 +174,6 @@ function KSlide_connections(all, duration, facts, id)
                         && p.target.index != i;
             });
         } 
-        
-        function rotate() {
-            d3.select("#circle" + self.id).transition().duration(60000).attr("transform", "translate(360,360)rotate(180)")
-                    .each("end", function() {
-                        d3.select('#circle' + self.id).transition().duration(60000).attr("transform", "translate(360,360)rotate(359)")
-                                .each("end", function() {
-                                    d3.select('#circle' + self.id).transition().duration(1).attr("transform", "translate(360,360)rotate(0)")
-                                            .each("end", function() {
-                                                rotate();
-                                            });
-                                });
-                    });
-        }        
-        rotate();
-        
                     
         self.details = [];
         //a title
@@ -215,10 +200,22 @@ function KSlide_connections(all, duration, facts, id)
 
     self.show = function(cb_done)
     {
+        function rotate() {
+            d3.select("#circle" + self.id).
+                    transition().duration(60000).ease('linear').attr("transform", "translate(360,360) rotate(180)").each("end", function() {
+                        d3.select('#circle' + self.id).transition().duration(60000).ease('linear').attr("transform", "translate(360,360) rotate(360)")
+                                .each("end", function() {
+                                    rotate();
+                                });
+                    });
+        }        
+        rotate();
+        
+        
         //calculate interval
         var interval = self.duration / self.facts.length; 
         var index = 0;
-        $detail = $('<div class="stat"></div>');
+        var $detail = $('<div class="stat"></div>');
         $('#' + self.id).append($detail);
         $detail.hide();
         var showFact = function(){                
@@ -243,6 +240,3 @@ function KSlide_connections(all, duration, facts, id)
         }, self.duration);
     }
 }
-
-
-//KSlide_nameList.prototype();

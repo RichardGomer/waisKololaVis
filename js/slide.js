@@ -118,7 +118,7 @@ function KVideo(bpm, element)
      */ 
     self.show = function(cb_done)
     {
-        var snum = 0;
+        var snum = -1;
         
         // TODO: Start the soundtrack - How will we know when it starts playing?
         var startTime = (new Date).getTime();
@@ -134,8 +134,7 @@ function KVideo(bpm, element)
         /**
          * This function progresses to the next slide
          *
-         * TODO: Wait until the next transition point in the soundtrack?
-         * TODO: Progress after a certain time limit if the slide itself doesn't call the progression itself?
+         * TODO: Progress after a certain time limit if the slide doesn't call the progression itself?
          */
         self.running = true;
         self.runcount++;

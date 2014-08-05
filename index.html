@@ -42,7 +42,7 @@
     </head>
 
     <body>
-        <div id="video">RENDERING...</div>
+        <div id="video"><img src="css/load.gif" alt="Loading" /></div>
         <script>
             
             var ytplayer = false;
@@ -52,14 +52,20 @@
         
         var pres = new KVideo(64, document.getElementById('video'));
                 
+        var vcentre = function()
+        {
+            $('#video').css({'margin-top': Math.max(0, ($(window).height() - $('#video').height() ) / 2) + "px"});
+        } 
+        vcentre();
+        $(window).resize(vcentre);
+            
         function setup(data)
         {
             console.log("Data received - Creating slides");         
-            //First slide doesn't seem to show (but in this case names is broken anyway so probably for the best right now!)
+
             
-            // Surplus slide because the first always gets omitted!
-            var ppl = new KSlide_nameList(data.people, data.events);
-            pres.addSlide(ppl);
+            var title = new KSlide_title('Web Science DTC', 3500, '<img src=\"css/soton.png\" alt=\"University of Southampton\" />');
+            pres.addSlide(title);
             
             // Slide of names
             var ppl2 = new KSlide_nameList(data.people, data.events);
@@ -169,7 +175,7 @@
             {
                 var slides =  pres.getSlides();
                 
-                console.log("SLIDES READY<br />");
+                console.log("SLIDES READY");
                 
                 // Make it loop!
                 var show = function(){
@@ -180,9 +186,9 @@
                     pres.show();  // pass show as a callback in here to make it loop!
                 }
                 
-                document.getElementById('video').innerHTML = "READY! Click to begin";
+                $('#video').empty().append("<button id=\"begin\">PLAY</button>");
                 
-                document.body.onclick = function(){  show(); };
+                $('#begin').click(function(){  show(); });
             }
             
             pres.transition = awesomeTransition;
@@ -210,10 +216,11 @@
 	</script>
         
         <div id="controls">
-            <input id="stop" type="button" value="stop" onclick="stop();" />            
+            <input id="stop" type="button" value="stop" onclick="stop();" />     
+            <audio id="audio" src="audio.mp3" preload="auto" type="audio/mp3" controls></audio>
         </div>
         
-        <audio id="audio" src="audio.mp3" preload="auto" type="audio/mp3" controls></audio>
+        
 
     </body>
 </html>

@@ -14,7 +14,7 @@
     display:inline-block;
     margin-top: 20px;
     font-size: 2.5em;
-    max-width: 70%;
+    width: 60%;
 }
 
 .KSlide_feature .feature-count{
@@ -22,7 +22,7 @@
     margin-left: 5%;
     font-size: 9em;
     display:inline-block;
-    max-width: 25%;
+    width: 30%;
 }
 
 .KSlide_feature .images{

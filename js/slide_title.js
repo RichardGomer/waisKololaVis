@@ -4,7 +4,7 @@
  * Instantiate with a single event object from the API
  */
  
-function KSlide_title(text, time)
+function KSlide_title(text, time, extra)
 {
     var self = this;
 
@@ -13,8 +13,8 @@ function KSlide_title(text, time)
         self.el = el;
 
         var h;
-        el.appendChild(h = document.createElement('h1'));
-        h.innerHTML = text;
+        $(el).append('<h1>' + text + '</h1>');
+        $(el).append('<div>' + extra + '</div>');
 
         cb_done();
     }

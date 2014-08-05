@@ -2,14 +2,10 @@
     text-align: center;
 }
 
-.KSlide_credits .title{
-    margin-top: 5px;
-    margin-bottom: 20px;
-}
-
 .KSlide_credits .entries{
-    height: 500px;
+    height: 100%;
     overflow-y: hidden;
+    padding: 500px 0 800px 0;
 }
 
 .KSlide_credits .entries .entry{
